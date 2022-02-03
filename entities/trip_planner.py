@@ -4,10 +4,13 @@ from typing import List
 from obstacle import Obstacle
 from utils import Node
 
-from copy import deepcopy
 
 
 from constants import OBS_DIM, CAR_DIM, TURNING_RAD, DELTA_ST
+
+
+# Add instuctions after moving to the co-ordinate 
+# make a seperate function for that 
 
 
 class TripPlanner:
@@ -147,6 +150,12 @@ class TripPlanner:
 
         return return_states
 
+    def _generateInstructions(self):
+
+        # just trace back the code for _expand node
+
+        pass
+
 
     def planTripBFS(self,startNode: Node , goalNode: Node):
 
@@ -192,11 +201,10 @@ class TripPlanner:
 
 # testing 
 ## TEST 1
+startNode = Node("START", 60, 60, 90)
+goalNode = Node("GOAL", 150, 60, 180)
 
-startNode = Node("START", 15, 15, 90)
-goalNode = Node("GOAL", 60, 40, 90)
-
-obs = [Obstacle("1", 100, 100, 90), Obstacle("2", 150, 60, 0), Obstacle("1", 180, 70, 180)]
+obs = [ Obstacle("2", 100, 60, 0), Obstacle("1", 180, 70, 180)]
 path = []
 
 algo = TripPlanner(path, obs)
