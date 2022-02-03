@@ -15,9 +15,13 @@ class Obstacle:
         pos_image  = math.radians(self.pos_image)
         delta = (OBS_DIM//2 + FOCUS + CAR_DIM//2)
         pos_x = self.pos_x +  math.cos(pos_image)*delta
-        pos_y = self.pos_y + math.sin(pos_image)*delta
-
-        return pos_x, pos_y
+        pos_y = self.pos_y + math.sin(pos_image)*delta\
+        
+        if self.pos_image < 180:
+            theta = self.pos_image + 180
+        else:
+            theta = self.pos_image - 180
+        return pos_x, pos_y, theta
 
     
 

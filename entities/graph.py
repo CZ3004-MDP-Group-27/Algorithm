@@ -40,9 +40,9 @@ class Graph:
         nodeList = [self.carNode]
     
         for obs in obstacles:
-            posX, posY = obs.generate_waypoint()
-            nodeList.append(Node(obs.key, posX, posY))
-            print(f"Waypoint of {obs.key}: {posX}, {posY}")
+            posX, posY, theta = obs.generate_waypoint()
+            nodeList.append(Node(obs.key, posX, posY, theta=theta))
+            print(f"Waypoint of {obs.key}: {posX}, {posY}, {theta}")
         for i in range(len(nodeList)):
             self.nodeMap[nodeList[i].key] = nodeList[i]
 

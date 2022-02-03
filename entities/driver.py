@@ -43,7 +43,7 @@ def preprocess(input_str):
         if key == "ROB":
 
             posX, posY = list(map(int,pos.split(",")))
-            carNode = Node(key, posX, posY)
+            carNode = Node(key, posX, posY, theta= 90)
         else:
 
             posX, posY, pos_image = list(map(int,pos.split(",")))
