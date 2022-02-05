@@ -1,0 +1,6 @@
+1. How to send instructions to the robot ? i.e do we send all the instructions for the entire trip or the other option is to send it one by one for every obstacle ?(Need advice from hardware team and Rpi. Will code handling of edge cases accordingly)
+2. Should we implement only 90 degrees turns or 45 degrees turns as well ? (In terms of algo, both are pretty straightforward but depends how difficult is it for the hardware team to calibrate)
+3. Do we take pictures of the obstacle while moving i.e take multiple pictures while moving in a straight line or do we only take one picture after reaching focus (20 cm from obstacle)? (need advice of RPi team, algo may change accordingly)
+4. Will the algorithm run on RPi or some other machine? (Need to code communication b/w PC and RPi if the algo will not run Rpi)
+5. Discuss whether the following is possible:
+    - Uses ultra sonic sensors or IR sensors to reach the nearest corner or makes use of the camera to find the position (depth)

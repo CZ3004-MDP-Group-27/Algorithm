@@ -68,7 +68,7 @@ class TripPlanner:
 
         states = []
 
-        if node.theta == 0:
+        if ctheta == 0:
 
             # forward 
 
@@ -76,15 +76,13 @@ class TripPlanner:
             
             # reverse
 
-            states.append(Node("STATE",cx+DELTA_ST, cy, ctheta))
+            states.append(Node("STATE",cx-DELTA_ST, cy, ctheta))
 
             # turn right 
-
-            states.append(Node("STATE",cx+TURNING_RAD, cy-TURNING_RAD, 270))
-
-            # turn left
-
-            states.append(Node("STATE",cx+TURNING_RAD, cy+TURNING_RAD, 90))
+            dummy = (Node("DUMMY", cx+TURNING_RAD, cy, ctheta))
+            if self._checkStateIsValid(dummy):
+                states.append(Node("STATE",cx+TURNING_RAD, cy-TURNING_RAD, 270))
+                states.append(Node("STATE",cx+TURNING_RAD, cy+TURNING_RAD, 90))
         
         elif node.theta == 90:
 
@@ -94,15 +92,13 @@ class TripPlanner:
             
             # reverse
 
-            states.append(Node("STATE",cx, cy+DELTA_ST, ctheta))
+            states.append(Node("STATE",cx, cy-DELTA_ST, ctheta))
 
             # turn right 
-
-            states.append(Node("STATE",cx+TURNING_RAD, cy+TURNING_RAD, 0))
-
-            # turn left
-
-            states.append(Node("STATE", cx-TURNING_RAD, cy+TURNING_RAD, 180))
+            dummy = Node("DUMMY", cx, cy+TURNING_RAD, ctheta)
+            if self._checkStateIsValid(dummy):
+                states.append(Node("STATE",cx+TURNING_RAD, cy+TURNING_RAD, 0))
+                states.append(Node("STATE", cx-TURNING_RAD, cy+TURNING_RAD, 180))
         
         elif node.theta == 180:
 
@@ -115,12 +111,10 @@ class TripPlanner:
             states.append(Node("STATE",cx+DELTA_ST, cy, ctheta))
 
             # turn right 
-
-            states.append(Node("STATE",cx-TURNING_RAD, cy+TURNING_RAD, 90))
-
-            # turn left
-
-            states.append(Node("STATE",cx-TURNING_RAD, cy-TURNING_RAD, 270))
+            dummy = Node("DUMMY", cx-TURNING_RAD, cy, ctheta)
+            if self._checkStateIsValid(dummy):
+                states.append(Node("STATE",cx-TURNING_RAD, cy+TURNING_RAD, 90))
+                states.append(Node("STATE",cx-TURNING_RAD, cy-TURNING_RAD, 270))
         
         elif node.theta == 270:
 
@@ -133,12 +127,10 @@ class TripPlanner:
             states.append(Node("STATE",cx, cy+DELTA_ST, ctheta))
 
             # turn right 
-
-            states.append(Node("STATE",cx-TURNING_RAD, cy-TURNING_RAD, 180))
-
-            # turn left
-
-            states.append(Node("STATE",cx+TURNING_RAD, cy-TURNING_RAD, 0))
+            dummy = Node("DUMMY", cx, cy-TURNING_RAD, ctheta)
+            if self._checkStateIsValid(dummy):
+                states.append(Node("STATE",cx-TURNING_RAD, cy-TURNING_RAD, 180))
+                states.append(Node("STATE",cx+TURNING_RAD, cy-TURNING_RAD, 0))
 
         return_states = []
 
@@ -186,6 +178,8 @@ class TripPlanner:
             
             adj = self._expandNode(newNode)
 
+            #print(adj)
+
             for item in adj:
 
                 newPath = path [:]
@@ -202,18 +196,19 @@ class TripPlanner:
 # testing 
 ## TEST 1
 startNode = Node("START", 60, 60, 90)
-goalNode = Node("GOAL", 150, 60, 180)
+goalNode = Node("GOAL", 35, 85, 180)
 
-obs = [ Obstacle("2", 100, 60, 0), Obstacle("1", 180, 70, 180)]
+obs = [ Obstacle("2", 60, 85, 0)]
 path = []
 
 algo = TripPlanner(path, obs)
+print(algo._checkStateIsValid(startNode))
+print(algo._checkStateIsValid(goalNode))
 
 trip = algo.planTripBFS(startNode, goalNode)
 
 for st in trip:
-
-    print(f"ROB Moves to ({st.x}, {st.y}, {st.theta})")
+        print(f"ROB Moves to ({st.x}, {st.y}, {st.theta})")
 
 
 
