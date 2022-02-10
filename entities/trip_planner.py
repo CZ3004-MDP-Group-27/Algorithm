@@ -2,11 +2,13 @@
 
 from typing import List
 from obstacle import Obstacle
+from math import pi
 from utils import Node
+from heapq import heapify, heappush, heappop
 
-
-
+# importing the constants 
 from constants import OBS_DIM, CAR_DIM, TURNING_RAD, DELTA_ST
+
 
 
 # Add instuctions after moving to the co-ordinate 
@@ -61,8 +63,12 @@ class TripPlanner:
         
         return False
 
+    def checkTurn(self, node:Node):
 
-    def _expandNode(self,node: Node)-> List:
+        pass
+
+
+    def _expandNodeBFS(self,node: Node)-> List:
 
         cx, cy, ctheta = node.x, node.y, node.theta
 
@@ -78,11 +84,25 @@ class TripPlanner:
 
             states.append(Node("STATE",cx-DELTA_ST, cy, ctheta))
 
-            # turn right 
-            dummy = (Node("DUMMY", cx+TURNING_RAD, cy, ctheta))
-            if self._checkStateIsValid(dummy):
-                states.append(Node("STATE",cx+TURNING_RAD, cy-TURNING_RAD, 270))
-                states.append(Node("STATE",cx+TURNING_RAD, cy+TURNING_RAD, 90))
+            # dummy states 
+            dummy_right = (Node("DUMMY", cx, cy-TURNING_RAD, ctheta))
+            dummy_st_fr = (Node("DUMMY", cx+TURNING_RAD, cy, ctheta))
+            dummy_left = (Node("DUMMY", cx, cy+TURNING_RAD, ctheta))
+            dummy_st_bk = (Node("DUMMY", cx-TURNING_RAD, cy, ctheta))
+
+            # forward turn
+            if self._checkStateIsValid(dummy_st_fr):
+                if self._checkStateIsValid(dummy_right):
+                    states.append(Node("STATE",cx+TURNING_RAD, cy-TURNING_RAD, 270))
+                if self._checkStateIsValid(dummy_left):
+                    states.append(Node("STATE",cx+TURNING_RAD, cy+TURNING_RAD, 90))
+            
+            # backward turn
+            if self._checkStateIsValid(dummy_st_bk):
+                if self._checkStateIsValid(dummy_right):
+                    states.append(Node("STATE",cx-TURNING_RAD, cy-TURNING_RAD, 90))
+                if self._checkStateIsValid(dummy_left):
+                    states.append(Node("STATE",cx-TURNING_RAD, cy+TURNING_RAD, 270))
         
         elif node.theta == 90:
 
@@ -94,11 +114,25 @@ class TripPlanner:
 
             states.append(Node("STATE",cx, cy-DELTA_ST, ctheta))
 
-            # turn right 
-            dummy = Node("DUMMY", cx, cy+TURNING_RAD, ctheta)
-            if self._checkStateIsValid(dummy):
-                states.append(Node("STATE",cx+TURNING_RAD, cy+TURNING_RAD, 0))
-                states.append(Node("STATE", cx-TURNING_RAD, cy+TURNING_RAD, 180))
+            # dummy states 
+            dummy_right = (Node("DUMMY", cx+TURNING_RAD, cy, ctheta))
+            dummy_st_fr = Node("DUMMY", cx, cy+TURNING_RAD, ctheta)
+            dummy_left = (Node("DUMMY", cx-TURNING_RAD, cy, ctheta))
+            dummy_st_bk = Node("DUMMY", cx, cy-TURNING_RAD, ctheta)
+            
+            # forward turn
+            if self._checkStateIsValid(dummy_st_fr):
+                if self._checkStateIsValid(dummy_right):
+                    states.append(Node("STATE",cx+TURNING_RAD, cy+TURNING_RAD, 0))
+                if self._checkStateIsValid(dummy_left):
+                    states.append(Node("STATE", cx-TURNING_RAD, cy+TURNING_RAD, 180))
+            
+            # backward turn
+            if self._checkStateIsValid(dummy_st_bk):
+                if self._checkStateIsValid(dummy_right):
+                    states.append(Node("STATE",cx+TURNING_RAD, cy-TURNING_RAD, 180))
+                if self._checkStateIsValid(dummy_left):
+                    states.append(Node("STATE",cx-TURNING_RAD, cy-TURNING_RAD, 0))
         
         elif node.theta == 180:
 
@@ -110,11 +144,25 @@ class TripPlanner:
 
             states.append(Node("STATE",cx+DELTA_ST, cy, ctheta))
 
-            # turn right 
-            dummy = Node("DUMMY", cx-TURNING_RAD, cy, ctheta)
-            if self._checkStateIsValid(dummy):
-                states.append(Node("STATE",cx-TURNING_RAD, cy+TURNING_RAD, 90))
-                states.append(Node("STATE",cx-TURNING_RAD, cy-TURNING_RAD, 270))
+            # dummy states
+            dummy_right = Node("DUMMY", cx, cy+TURNING_RAD, ctheta)
+            dummy_st_fr = Node("DUMMY", cx-TURNING_RAD, cy, ctheta)
+            dummy_left = Node("DUMMY", cx, cy-TURNING_RAD, ctheta)
+            dummy_st_bk = Node("DUMMY", cx+TURNING_RAD, cy, ctheta)
+
+            # forward turn
+            if self._checkStateIsValid(dummy_st_fr):
+                if self._checkStateIsValid(dummy_right):
+                    states.append(Node("STATE",cx-TURNING_RAD, cy+TURNING_RAD, 90))
+                if self._checkStateIsValid(dummy_left):
+                    states.append(Node("STATE",cx-TURNING_RAD, cy-TURNING_RAD, 270))
+            
+            # backward turn
+            if self._checkStateIsValid(dummy_st_bk):
+                if self._checkStateIsValid(dummy_right):
+                    states.append(Node("STATE",cx+TURNING_RAD, cy+TURNING_RAD, 270))
+                if self._checkStateIsValid(dummy_left):
+                    states.append(Node("STATE",cx+TURNING_RAD, cy-TURNING_RAD, 90))
         
         elif node.theta == 270:
 
@@ -126,11 +174,24 @@ class TripPlanner:
 
             states.append(Node("STATE",cx, cy+DELTA_ST, ctheta))
 
-            # turn right 
-            dummy = Node("DUMMY", cx, cy-TURNING_RAD, ctheta)
-            if self._checkStateIsValid(dummy):
-                states.append(Node("STATE",cx-TURNING_RAD, cy-TURNING_RAD, 180))
-                states.append(Node("STATE",cx+TURNING_RAD, cy-TURNING_RAD, 0))
+            # dummy states 
+            dummy_right = Node("DUMMY", cx-TURNING_RAD, cy, ctheta)
+            dummy_st_fr = Node("DUMMY", cx, cy-TURNING_RAD, ctheta)
+            dummy_left = Node("DUMMY", cx+TURNING_RAD, cy, ctheta)
+            dummy_st_bk = Node("DUMMY", cx, cy+TURNING_RAD, ctheta)
+
+            # forward turn
+            if self._checkStateIsValid(dummy_st_fr):
+                if self._checkStateIsValid(dummy_right):
+                    states.append(Node("STATE",cx-TURNING_RAD, cy-TURNING_RAD, 180))
+                if self._checkStateIsValid(dummy_left):
+                    states.append(Node("STATE",cx+TURNING_RAD, cy-TURNING_RAD, 0))
+            
+            if self._checkStateIsValid(dummy_st_bk):
+                if self._checkStateIsValid(dummy_right):
+                    states.append(Node("STATE",cx-TURNING_RAD, cy+TURNING_RAD, 0))
+                if self._checkStateIsValid(dummy_left):
+                    states.append(Node("STATE",cx+TURNING_RAD, cy+TURNING_RAD, 180))
 
         return_states = []
 
@@ -148,6 +209,109 @@ class TripPlanner:
 
         pass
 
+    def _computeManhattan(self,node1: Node, node2: Node):
+
+        #theta_diff = abs(node1.theta - node2.theta)
+        x_diff = abs (node1.x - node2.x)
+        y_diff = abs (node1.y - node2.y)
+
+        return x_diff + y_diff
+    
+    def _tracePath(self, stateDict:dict, goalNode: Node):
+        gx, gy, gtheta = goalNode.x, goalNode.y, goalNode.theta
+
+        path = []
+
+        if f"{gx} {gy} {gtheta}" not in stateDict:
+            return path
+        
+        else:
+            current = f"{gx} {gy} {gtheta}" 
+
+            while (True):
+
+                _, node = stateDict[current]
+
+                path.append(current)
+
+                parent = node.parent
+
+                if parent is None:
+
+                    return path [::-1]
+                current = f"{parent.x} {parent.y} {parent.theta}"
+
+        
+
+
+
+    def planTripAStar(self, startNode: Node, goalNode: Node):
+
+        # Astar Algorithm with manhattan distance as heuristic
+
+        # A map to represent closed list 
+
+        # A minheap to represent the open list
+
+
+        closed_list = {}
+        open_list = [(0, startNode)]
+        stateDetails = {}
+        dist_sg = self._computeManhattan(startNode, goalNode)
+        startNode.h = dist_sg
+        stateDetails[f"{startNode.x} {startNode.y} {startNode.theta}"] = (f"{dist_sg} 0 {dist_sg}", startNode)
+        heapify(open_list)
+
+        while (len(open_list) != 0):
+            f,current = heappop(open_list)
+            adj = self._expandNodeBFS(current)
+            current_hash = f"{current.x} {current.y} {current.theta}"
+            _, gparent, __ = list(map(int,stateDetails[current_hash][0].split(" ")))
+
+            for successor in adj:
+
+                successor.parent = current
+                gnew = gparent + self._computeManhattan(successor, current)
+                hnew = self._computeManhattan(successor, goalNode)
+                fnew = gnew + hnew 
+                successor.h = hnew
+                successor_hash = f"{successor.x} {successor.y} {successor.theta}"
+                if successor == goalNode:
+                    # return stateDetails
+                    stateDetails[successor_hash] = (f"{fnew} {gnew} {hnew}", successor)
+                    print ("Yay!!! We found a solution")
+                    path = self._tracePath(stateDetails, goalNode)
+                    return path
+                elif closed_list.get(successor_hash) == False or closed_list.get(successor_hash) is None:
+
+                    if successor_hash not in stateDetails:
+                        heappush(open_list, (fnew, successor))
+                        stateDetails[successor_hash] = (f"{fnew} {gnew} {hnew}", successor)
+                        
+                    else:
+                        fold = int(stateDetails[successor_hash][0].split(" ")[0])
+
+                        if fnew < fold:
+                            heappush(open_list, (fnew, successor))
+                            stateDetails[successor_hash] = (f"{fnew} {gnew} {hnew}", successor)
+                elif closed_list.get(successor_hash) == True:
+                    fold = int(stateDetails[successor_hash][0].split(" ")[0])
+
+                    if fnew < fold:
+                        closed_list[successor_hash] = False
+                        heappush(open_list, (fnew, successor))
+                        stateDetails[successor_hash] = (f"{fnew} {gnew} {hnew}", successor)
+
+            closed_list [current_hash] = True
+        
+        # Algo failed which is impossible as Astar is complete 
+        print ("Oops! No solution found")
+        print(f"No of states searched: {len(closed_list)}")
+        print(current.x, current.y, current.theta)
+        return []
+
+
+
 
     def planTripBFS(self,startNode: Node , goalNode: Node):
 
@@ -164,7 +328,7 @@ class TripPlanner:
 
             if len(path) > level:
                 level += 1
-                print(f"Level: {level}")
+                #print(f"Level: {level}")
 
             newNode = path[-1]
 
@@ -176,7 +340,7 @@ class TripPlanner:
 
                 return path
             
-            adj = self._expandNode(newNode)
+            adj = self._expandNodeBFS(newNode)
 
             #print(adj)
 
@@ -189,29 +353,12 @@ class TripPlanner:
                 queue.append(newPath)
             
             visited[f"{newNode.x}, {newNode.y}, {newNode.theta}"] = True
+
+        print(f"No of states searched: {len(visited)}")
+        print(newNode.x, newNode.y, newNode.theta)
+        return []
     
-            
-
-
-# testing 
-## TEST 1
-startNode = Node("START", 60, 60, 90)
-goalNode = Node("GOAL", 35, 85, 180)
-
-obs = [ Obstacle("2", 60, 85, 0)]
-path = []
-
-algo = TripPlanner(path, obs)
-print(algo._checkStateIsValid(startNode))
-print(algo._checkStateIsValid(goalNode))
-
-trip = algo.planTripBFS(startNode, goalNode)
-
-for st in trip:
-        print(f"ROB Moves to ({st.x}, {st.y}, {st.theta})")
-
-
-
+        
 
 
 
