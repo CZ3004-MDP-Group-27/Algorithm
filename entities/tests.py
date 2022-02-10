@@ -45,7 +45,7 @@ from trip_planner import TripPlanner
 ## TEST 3 (More obstacles)
 
 startNode = Node("START", 15, 15, 90)
-goalNode = Node("GOAL", 190, 160, 180)
+goalNode = Node("GOAL", 100, 60, 180)
 
 obs = [ Obstacle("1", 150, 60, 0),Obstacle("2", 100, 100, 90), Obstacle("3", 60, 60, 270), Obstacle("3", 180, 150, 270) ]
 path = []
@@ -58,6 +58,8 @@ if len(trip) == 0:
     print ("Oops! No solution found")
 trip =  algo.planTripAStar(startNode, goalNode)
 
+instructions = algo.generateInstructions(trip)
+print(instructions)
 
-for st in trip:
-        print(f"ROB Moves to ({st})")
+# for st in trip:
+#         print(f"ROB Moves to ({st})")

@@ -203,7 +203,134 @@ class TripPlanner:
 
         return return_states
 
-    def _generateInstructions(self):
+    def generateInstructions(self, coordinates:  List):
+        instructions = []
+        delta = 0
+
+        for i in range (len(coordinates)-1):
+            currentx, currenty, currenttheta = list(map(int,coordinates[i].split(" ")))
+            nextx, nexty, nexttheta = list(map(int,coordinates[i+1].split(" ")))
+    
+            if currenttheta == 0:
+            
+                if nexttheta == currenttheta:
+                    
+                    delta += (nextx - currentx)
+                    continue
+
+                else:
+
+                    if delta > 0:
+                        instructions.append(f"FORWARD {delta}")
+                    elif delta < 0:
+                        instructions.append(f"REVERSE {-delta}")
+                    delta = 0
+
+                    if nexttheta == 90:
+
+                        if nextx > currentx:
+                            instructions.append(f"FORWARD TURN LEFT")
+                        if nextx < currentx:
+                            instructions.append(f"BACKWARD TURN RIGHT")
+                    
+                    if nexttheta == 270:
+
+                        if nextx > currentx:
+                            instructions.append(f"FORWARD TURN RIGHT")
+                        if nextx < currentx:
+                            instructions.append(f"BACKWARD TURN LEFT")
+            
+            elif currenttheta == 90:
+                if nexttheta == currenttheta:
+                    
+                    delta += (nexty - currenty)
+                    continue
+
+                else:
+
+                    if delta > 0:
+                        instructions.append(f"FORWARD {delta}")
+                    elif delta < 0:
+                        instructions.append(f"REVERSE {-delta}")
+                    delta = 0
+
+                    if nexttheta == 0:
+
+                        if nextx > currentx:
+                            instructions.append(f"FORWARD TURN RIGHT")
+                        if nextx < currentx:
+                            instructions.append(f"BACKWARD TURN LEFT")
+                    
+                    if nexttheta == 180:
+
+                        if nextx < currentx:
+                            instructions.append(f"FORWARD TURN LEFT")
+                        if nextx > currentx:
+                            instructions.append(f"BACKWARD TURN RIGHT")
+            
+            elif currenttheta == 180:
+                if nexttheta == currenttheta:
+                    
+                    delta += (currentx - nextx)
+                    continue
+
+                else:
+
+                    if delta > 0:
+                        instructions.append(f"FORWARD {delta}")
+                    elif delta < 0:
+                        instructions.append(f"REVERSE {-delta}")
+                    delta = 0
+
+                    if nexttheta == 90:
+
+                        if nextx < currentx:
+                            instructions.append(f"FORWARD TURN RIGHT")
+                        if nextx > currentx:
+                            instructions.append(f"BACKWARD TURN LEFT")
+                    
+                    if nexttheta == 270:
+
+                        if nextx < currentx:
+                            instructions.append(f"FORWARD TURN LEFT")
+                        if nextx > currentx:
+                            instructions.append(f"BACKWARD TURN RIGHT")
+
+            elif currenttheta == 270:
+                if nexttheta == currenttheta:
+                    
+                    delta += (currenty - nexty)
+                    continue
+
+                else:
+
+                    if delta > 0:
+                        instructions.append(f"FORWARD {delta}")
+                    elif delta < 0:
+                        instructions.append(f"REVERSE {-delta}")
+                    delta = 0
+
+                    if nexttheta == 180:
+
+                        if nextx < currentx:
+                            instructions.append(f"FORWARD TURN RIGHT")
+                        if nextx > currentx:
+                            instructions.append(f"BACKWARD TURN LEFT")
+                    
+                    if nexttheta == 0:
+
+                        if nextx < currentx:
+                            instructions.append(f"FORWARD TURN LEFT")
+                        if nextx > currentx:
+                            instructions.append(f"BACKWARD TURN RIGHT")
+
+            
+        return instructions
+                    
+
+                    
+
+            
 
         # just trace back the code for _expand node
 
