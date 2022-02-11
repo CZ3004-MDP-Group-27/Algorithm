@@ -64,7 +64,6 @@ while running:
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_LEFT or event.key == pygame.K_a: 
                 print("left")
-                print(car_x)
                 car_x_change -= 17.5
                
             if event.key == pygame.K_RIGHT or event.key == pygame.K_d: 
