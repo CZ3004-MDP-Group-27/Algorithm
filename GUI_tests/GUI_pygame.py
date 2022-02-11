@@ -18,9 +18,11 @@ set icon below
 # pygame.display.set_icon(icon)
 
 #Car
-car_img = pygame.image.load('GUI_Images/Car.png')
+car_img = pygame.image.load('GUI_Images/car3.png')
 car_x = 17.5
 car_y = 577.5
+car_center_x = car_x + 52.5
+car_center_y = car_y + 52.5
 car_x_change = 0
 car_y_change = 0
 
@@ -28,6 +30,14 @@ car_y_change = 0
 car_orientation = 0
 rotate_angle = 0
 
+def rot_center(image, angle):
+    """rotate an image while keeping its center and size"""
+    orig_rect = image.get_rect()
+    rot_image = pygame.transform.rotate(image, angle)
+    rot_rect = orig_rect.copy()
+    rot_rect.center = rot_image.get_rect().center
+    rot_image = rot_image.subsurface(rot_rect).copy()
+    return rot_image
 
 def car(x,y):
     screen.blit(car_img,(x, y))
@@ -39,7 +49,6 @@ def move_up(car_y, pos):
         return car_y
     
 
- 
 
 #Game loop
 clock = pygame.time.Clock()
@@ -49,15 +58,13 @@ while running:
     screen.fill((255,255,255))
     screen.blit(background, (0, 0))
     
-    new_pos = 560
-    
+
     
         
 
-
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            running = False  
+            running = False 
         
        
     
@@ -75,6 +82,14 @@ while running:
             if event.key == pygame.K_DOWN or event.key == pygame.K_s: 
                 print("down")
                 car_y_change += 17.5
+
+            if event.key == pygame.K_e:
+                car_img = rot_center(car_img, -45)
+            
+            if event.key == pygame.K_q:
+                car_img = rot_center(car_img, 45)
+
+
         
 
         if event.type == pygame.KEYUP:
@@ -88,36 +103,40 @@ while running:
                 car_y_change = 0
 
     #moving one unit
-        if car_x_change != 0:
-            if (car_x + car_x_change)>=0 and (car_x + car_x_change)<=595:
-                car_x += car_x_change
-                car_x_change = 0 
-            else:
-                car_x_change = 0 
-                print("collision with boundary")
+    if car_x_change != 0:
+        if (car_x + car_x_change)>=0 and (car_x + car_x_change)<=595:
+            car_x += car_x_change
+            car_x_change = 0 
+        else:
+            car_x_change = 0 
+            print("collision with boundary")
+        
+        car_center_x = car_x + 52.5
+        car_center_y = car_y + 52.5
 
-            car_center_x = car_x + 52.5
-            car_center_y = car_y + 52.5
+        print("corner coordinates: {}, {}".format(car_x, car_y))
+        print("center coordinates: {}, {}".format(car_center_x, car_center_y))
 
-            print("corner coordinates: {}, {}".format(car_x, car_y))
-            print("center coordinates: {}, {}".format(car_center_x, car_center_y))
+    if car_y_change != 0:
+        if (car_y + car_y_change)>=0 and (car_y + car_y_change)<=595:
+            car_y += car_y_change
+            car_y_change = 0 
+        else:
+            car_y_change = 0 
+            print("collision with boundary")
+        
+        car_center_x = car_x + 52.5
+        car_center_y = car_y + 52.5
 
-        if car_y_change != 0:
-            if (car_y + car_y_change)>=0 and (car_y + car_y_change)<=595:
-                car_y += car_y_change
-                car_y_change = 0 
-            else:
-                car_y_change = 0 
-                print("collision with boundary")
+        print("corner coordinates: {}, {}".format(car_x, car_y))
+        print("center coordinates: {}, {}".format(car_center_x, car_center_y))
 
-            car_center_x = car_x + 52.5
-            car_center_y = car_y + 52.5
-
-            print("corner coordinates: {}, {}".format(car_x, car_y))
-            print("center coordinates: {}, {}".format(car_center_x, car_center_y))
 
     
-    clock.tick(120)
+    
+
+    
+    clock.tick(30)
 
     car(car_x, car_y)
     pygame.display.update()
