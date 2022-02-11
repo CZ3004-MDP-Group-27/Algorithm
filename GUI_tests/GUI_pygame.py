@@ -88,36 +88,34 @@ while running:
                 car_x_change = 0
                 car_y_change = 0
 
-    #check new coordinates
-    if car_x_change != 0:
-        print("new corner coordinates: {}, {}".format(car_x+car_x_change, car_y))
-        car_center_x = car_x + car_x_change + 52.5
-        car_center_y = car_y + 52.5
-        print("new center coordinates: {}, {}".format(car_center_x, car_center_y))
+    #moving one unit
+        if car_x_change != 0:
+            if (car_x + car_x_change)>=0 and (car_x + car_x_change)<=595:
+                car_x += car_x_change
+                car_x_change = 0 
+            else:
+                car_x_change = 0 
+                print("collision with boundary")
 
-    if car_y_change !=0:
-        print("new corner coordinates: {}, {}".format(car_x, car_y+car_y_change))
-        car_center_x = car_x + 52.5
-        car_center_y = car_y + car_y_change + 52.5
-        print("new center coordinates: {}, {}".format(car_center_x, car_center_y))
+            car_center_x = car_x + 52.5
+            car_center_y = car_y + 52.5
 
+            print("corner coordinates: {}, {}".format(car_x, car_y))
+            print("center coordinates: {}, {}".format(car_center_x, car_center_y))
 
-    #moving one unit in selected direction
-    if (car_x + car_x_change)>=0 and (car_x + car_x_change)<=595:
-        car_x += car_x_change
-        car_x_change = 0 
-    
-    if (car_x + car_x_change)<0 or (car_x + car_x_change)>595:
-        car_x_change = 0 
-        print("collision with boundary")
-    
-    if (car_y + car_y_change)>=0 and(car_y + car_y_change)<=595:
-        car_y += car_y_change
-        car_y_change = 0
+        if car_y_change != 0:
+            if (car_y + car_y_change)>=0 and (car_y + car_y_change)<=595:
+                car_y += car_y_change
+                car_y_change = 0 
+            else:
+                car_y_change = 0 
+                print("collision with boundary")
 
-    if (car_y + car_y_change)<0 or (car_y + car_y_change)>595:
-        car_y_change = 0 
-        print("collision with boundary")
+            car_center_x = car_x + 52.5
+            car_center_y = car_y + 52.5
+
+            print("corner coordinates: {}, {}".format(car_x, car_y))
+            print("center coordinates: {}, {}".format(car_center_x, car_center_y))
 
     
     clock.tick(120)
