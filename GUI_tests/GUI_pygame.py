@@ -1,4 +1,6 @@
 import pygame
+from pygame.math import Vector2
+import math
 
 #intialize game
 pygame.init()
@@ -8,7 +10,7 @@ screen = pygame.display.set_mode((1000, 700))
 background = pygame.image.load("GUI_Images/Arena.png")
 background = pygame.transform.scale(background,(700,700))
 
-
+ani = 4
 #Title
 pygame.display.set_caption("GUI")
 """
@@ -17,18 +19,7 @@ set icon below
 # icon = pygame.image.load('')
 # pygame.display.set_icon(icon)
 
-#Car
-car_img = pygame.image.load('GUI_Images/car3.png')
-car_x = 17.5
-car_y = 577.5
-car_center_x = car_x + 52.5
-car_center_y = car_y + 52.5
-car_x_change = 0
-car_y_change = 0
 
-#for turning(not yet implemented)
-car_orientation = 0
-rotate_angle = 0
 
 def rot_center(image, angle):
     """rotate an image while keeping its center and size"""
@@ -39,15 +30,87 @@ def rot_center(image, angle):
     rot_image = rot_image.subsurface(rot_rect).copy()
     return rot_image
 
-def car(x,y):
-    screen.blit(car_img,(x, y))
 
-def move_up(car_y, pos):
-    if car_y > pos:
-        return car_y - 0.1
-    if car_y == pos:
-        return car_y
+
+
+class Car(pygame.sprite.Sprite):
+    def __init__ (self, pos, picture_path):
+        super().__init__()
+        self.image = pygame.image.load(picture_path)
+        self.orig_image = self.image
+        self.rect = self.image.get_rect()
+        self.offset = Vector2(0, 0)
+        self.pos = Vector2(pos) 
+        self.angle = 0
+
+
+
+    def move_forward(self, distance, angle):
+        if angle == 0:
+            self.pos[1] -= distance
+        if angle == 45:
+            self.pos[0] -= distance * math.sin(math.pi/4)
+            self.pos[1] -= distance * math.sin(math.pi/4)
+        if angle == 90:
+            self.pos[0] -= distance
+        if angle == 135:
+            self.pos[0] -= distance * math.sin(math.pi/4)
+            self.pos[1] += distance * math.sin(math.pi/4)
+        if angle == 180:
+            self.pos[1] += distance
+        if angle == 225:
+            self.pos[0] += distance * math.sin(math.pi/4)
+            self.pos[1] += distance * math.sin(math.pi/4)
+        if angle == 270:
+            self.pos[0] += distance
+        if angle == 315:
+            self.pos[0] += distance * math.sin(math.pi/4)
+            self.pos[1] -= distance * math.sin(math.pi/4)
     
+    def move_backward(self, distance, angle):
+        if angle == 0:
+            self.pos[1] += distance
+        if angle == 45:
+            self.pos[0] += distance * math.sin(math.pi/4)
+            self.pos[1] += distance * math.sin(math.pi/4)
+        if angle == 90:
+            self.pos[0] += distance
+        if angle == 135:
+            self.pos[0] += distance * math.sin(math.pi/4)
+            self.pos[1] -= distance * math.sin(math.pi/4)
+        if angle == 180:
+            self.pos[1] -= distance
+        if angle == 225:
+            self.pos[0] -= distance * math.sin(math.pi/4)
+            self.pos[1] -= distance * math.sin(math.pi/4)
+        if angle == 270:
+            self.pos[0] -= distance
+        if angle == 315:
+            self.pos[0] -= distance * math.sin(math.pi/4)
+            self.pos[1] += distance * math.sin(math.pi/4)
+
+
+    def update(self):
+        self.angle = self.angle%360
+        self.rotate(self.angle)
+
+    def draw(self, surf):
+        surf.blit(self.image, self.center)
+
+
+    def rotate(self, angle):
+        """Rotate the image of the sprite around a pivot point."""
+        # Rotate the image.
+        self.image = pygame.transform.rotozoom(self.orig_image, angle, 1)
+        # Rotate the offset vector.
+        offset_rotated = self.offset.rotate(self.angle)
+        # Create a new rect with the center of the sprite + the offset.
+        self.rect = self.image.get_rect(center=self.pos+offset_rotated)
+
+
+car = Car([70, 630], 'GUI_Images/car with no box.png')
+car_group = pygame.sprite.Group()
+car_group.add(car)
 
 
 #Game loop
@@ -57,86 +120,26 @@ while running:
 
     screen.fill((255,255,255))
     screen.blit(background, (0, 0))
-    
-
-    
-        
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False 
-        
-       
-    
+
         if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_LEFT or event.key == pygame.K_a: 
-                print("left")
-                car_x_change -= 17.5
-               
-            if event.key == pygame.K_RIGHT or event.key == pygame.K_d: 
-                print("right")
-                car_x_change += 17.5
-            if event.key == pygame.K_UP or event.key == pygame.K_w: 
-                print("up")
-                car_y_change -= 17.5
-            if event.key == pygame.K_DOWN or event.key == pygame.K_s: 
-                print("down")
-                car_y_change += 17.5
+              
+            if event.key == pygame.K_UP or event.key == ord('w'):
+                car.move_forward(10, car.angle)
+            if event.key == pygame.K_DOWN or event.key == ord('s'):
+                car.move_backward(10, car.angle)
+            if event.key == pygame.K_LEFT or event.key == ord('a'):
+                car.angle += 45
+            if event.key == pygame.K_RIGHT or event.key == ord('d'):
+                car.angle -= 45
 
-            if event.key == pygame.K_e:
-                car_img = rot_center(car_img, -45)
-            
-            if event.key == pygame.K_q:
-                car_img = rot_center(car_img, 45)
+            print(car.pos)
+            print(car.angle)
 
-
-        
-
-        if event.type == pygame.KEYUP:
-            
-            if event.key == pygame.K_LEFT or event.key == pygame.K_a\
-            or event.key == pygame.K_RIGHT or event.key == pygame.K_d\
-            or event.key == pygame.K_UP or event.key == pygame.K_w\
-            or event.key == pygame.K_DOWN or event.key == pygame.K_s: 
-                print("key released")
-                car_x_change = 0
-                car_y_change = 0
-
-    #moving one unit
-    if car_x_change != 0:
-        if (car_x + car_x_change)>=0 and (car_x + car_x_change)<=595:
-            car_x += car_x_change
-            car_x_change = 0 
-        else:
-            car_x_change = 0 
-            print("collision with boundary")
-        
-        car_center_x = car_x + 52.5
-        car_center_y = car_y + 52.5
-
-        print("corner coordinates: {}, {}".format(car_x, car_y))
-        print("center coordinates: {}, {}".format(car_center_x, car_center_y))
-
-    if car_y_change != 0:
-        if (car_y + car_y_change)>=0 and (car_y + car_y_change)<=595:
-            car_y += car_y_change
-            car_y_change = 0 
-        else:
-            car_y_change = 0 
-            print("collision with boundary")
-        
-        car_center_x = car_x + 52.5
-        car_center_y = car_y + 52.5
-
-        print("corner coordinates: {}, {}".format(car_x, car_y))
-        print("center coordinates: {}, {}".format(car_center_x, car_center_y))
-
-
-    
-    
-
-    
+    car_group.update()
+    car_group.draw(screen)
     clock.tick(30)
-
-    car(car_x, car_y)
-    pygame.display.update()
+    pygame.display.flip()
