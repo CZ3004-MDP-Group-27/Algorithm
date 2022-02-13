@@ -1,7 +1,7 @@
-from turtle import forward
 import pygame
 from pygame.math import Vector2
 import math
+
 
 #intialize game
 pygame.init()
@@ -11,7 +11,6 @@ screen = pygame.display.set_mode((1000, 700))
 background = pygame.image.load("GUI_Images/Arena.png")
 background = pygame.transform.scale(background,(700,700))
 
-ani = 4
 #Title
 pygame.display.set_caption("GUI")
 """
@@ -80,6 +79,7 @@ class Movable_Object(pygame.sprite.Sprite):
         self.angle = self.angle%360
         self.rotate(self.angle)
 
+
     def draw(self, surf):
         surf.blit(self.image, self.center)
 
@@ -103,36 +103,7 @@ Movable_Object_Group.add(car)
 bounding_box = Movable_Object([70, 630], "GUI_Images/bounding box.png")
 Movable_Object_Group.add(bounding_box)
 
-"""
-def check_collision(dist, direction_of_motion, angle, x,y):
-    if direction_of_motion =='forward':
-        if angle == 0:
-            if y - dist <= 0:
-                return True
-        if angle == 45:
-            if x - dist <= 0 or y - dist <= 0:
-                return True
-        if angle == 90:
-            if x - dist <= 0:
-                return True
-        if angle == 135:
-            if x - dist <= 0 or y + dist >= 700:
-                return True
-        if angle == 180:
-            if y + dist >= 180:
-                return True
-        if angle == 225:
-            if x + dist >= 700 or y + dist >= 700:
-                return True
-        if angle == 270:
-            if x + dist >= 700:
-                return True
-        if angle == 315:
-            if x + dist >= 700 or y -dist <= 0:
-                return True
 
-    return False
-"""
 
 #Game loop
 clock = pygame.time.Clock()
@@ -141,21 +112,17 @@ while running:
 
     screen.fill((255,255,255))
     screen.blit(background, (0, 0))
-    
-    
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False 
-        
-    
+
 
         if event.type == pygame.KEYDOWN:
               
             if event.key == pygame.K_UP or event.key == ord('w'):
-               # if not check_collision(10, 'foward', car.angle, bounding_box.pos[0]-52.5, bounding_box[1]-52.5):
-                    car.move_forward(10, car.angle)
-                    bounding_box.move_forward(10, car.angle)
+                car.move_forward(10, car.angle)
+                bounding_box.move_forward(10, car.angle)
 
             if event.key == pygame.K_DOWN or event.key == ord('s'):
 
@@ -165,6 +132,7 @@ while running:
                 
             if event.key == pygame.K_LEFT or event.key == ord('a'):
                 car.angle += 45
+                
             if event.key == pygame.K_RIGHT or event.key == ord('d'):
                 car.angle -= 45
 
