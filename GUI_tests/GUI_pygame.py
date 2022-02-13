@@ -92,8 +92,50 @@ class Movable_Object(pygame.sprite.Sprite):
         offset_rotated = self.offset.rotate(self.angle)
         # Create a new rect with the center of the sprite + the offset.
         self.rect = self.image.get_rect(center=self.pos+offset_rotated)
+        
+        
+        
+
+obstacle_up = pygame.image.load("GUI_Images/o up.png")
+obstacle_down = pygame.image.load("GUI_Images/o down.png")
+obstacle_left = pygame.image.load("GUI_Images/o left.png")
+obstacle_right = pygame.image.load("GUI_Images/o right.png")
+
+class Obstacle(pygame.sprite.Sprite):
+    def __init__(self, pos, orientation):
+        super().__init__()
+        if orientation == 0:
+            self.image = obstacle_up
+        elif orientation == 1:
+            self.image = obstacle_left
+        elif orientation == 2:
+            self.image = obstacle_down
+        elif orientation == 3:
+            self.image = obstacle_right
+
+        self.orig_image = self.image
+        self.rect = self.image.get_rect()
+        self.offset = Vector2(0, 0)
+        self.pos = Vector2(pos) 
+        self.angle = 0
+
+    def update(self):
+        self.angle = self.angle%360
+        self.rotate(self.angle)
 
 
+    def draw(self, surf):
+        surf.blit(self.image, self.center)
+
+
+    def rotate(self, angle):
+        """Rotate the image of the sprite around a pivot point."""
+        # Rotate the image.
+        self.image = pygame.transform.rotozoom(self.orig_image, angle, 1)
+        # Rotate the offset vector.
+        offset_rotated = self.offset.rotate(self.angle)
+        # Create a new rect with the center of the sprite + the offset.
+        self.rect = self.image.get_rect(center=self.pos+offset_rotated)
     
 
 car = Movable_Object([70, 630], "GUI_Images/car with no box.png")
@@ -104,11 +146,19 @@ bounding_box = Movable_Object([70, 630], "GUI_Images/bounding box.png")
 Movable_Object_Group.add(bounding_box)
 
 
+Obstacle_Group = pygame.sprite.Group()
+obstacle_list = [[595.0, 595.0, 1], [455.0, 455.0, 3], [472.5, 157.5, 1], [52.5, 367.5, 2], [210.0, 210.0, 2]]
+
+def insert_obstacle(x, y, orientation):
+    obstacle = Obstacle([x,y], orientation)
+    Obstacle_Group.add(obstacle)
 
 #Game loop
 clock = pygame.time.Clock()
 running = True
 while running:
+    for x in range(0,5):
+        insert_obstacle(obstacle_list[x][0],obstacle_list[x][1], obstacle_list[x][2])
 
     screen.fill((255,255,255))
     screen.blit(background, (0, 0))
@@ -141,6 +191,8 @@ while running:
 
     Movable_Object_Group.update()
     Movable_Object_Group.draw(screen)
+    Obstacle_Group.update()
+    Obstacle_Group.draw(screen)
     clock.tick(30)
     
     pygame.display.flip()
