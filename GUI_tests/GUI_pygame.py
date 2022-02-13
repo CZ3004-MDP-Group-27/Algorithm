@@ -1,3 +1,4 @@
+from turtle import forward
 import pygame
 from pygame.math import Vector2
 import math
@@ -19,7 +20,7 @@ set icon below
 # icon = pygame.image.load('')
 # pygame.display.set_icon(icon)
 
-class Car(pygame.sprite.Sprite):
+class Movable_Object(pygame.sprite.Sprite):
     def __init__ (self, pos, picture_path):
         super().__init__()
         self.image = pygame.image.load(picture_path)
@@ -30,50 +31,49 @@ class Car(pygame.sprite.Sprite):
         self.angle = 0
 
 
-
     def move_forward(self, distance, angle):
         if angle == 0:
             self.pos[1] -= distance
         if angle == 45:
-            self.pos[0] -= distance * math.sin(math.pi/4)
-            self.pos[1] -= distance * math.sin(math.pi/4)
+            self.pos[0] -= distance * (1/math.sqrt(2))
+            self.pos[1] -= distance * (1/math.sqrt(2))
         if angle == 90:
             self.pos[0] -= distance
         if angle == 135:
-            self.pos[0] -= distance * math.sin(math.pi/4)
-            self.pos[1] += distance * math.sin(math.pi/4)
+            self.pos[0] -= distance * (1/math.sqrt(2))
+            self.pos[1] += distance * (1/math.sqrt(2))
         if angle == 180:
             self.pos[1] += distance
         if angle == 225:
-            self.pos[0] += distance * math.sin(math.pi/4)
-            self.pos[1] += distance * math.sin(math.pi/4)
+            self.pos[0] += distance * (1/math.sqrt(2))
+            self.pos[1] += distance * (1/math.sqrt(2))
         if angle == 270:
             self.pos[0] += distance
         if angle == 315:
-            self.pos[0] += distance * math.sin(math.pi/4)
-            self.pos[1] -= distance * math.sin(math.pi/4)
+            self.pos[0] += distance * (1/math.sqrt(2))
+            self.pos[1] -= distance * (1/math.sqrt(2))
     
     def move_backward(self, distance, angle):
         if angle == 0:
             self.pos[1] += distance
         if angle == 45:
-            self.pos[0] += distance * math.sin(math.pi/4)
-            self.pos[1] += distance * math.sin(math.pi/4)
+            self.pos[0] += distance * (1/math.sqrt(2))
+            self.pos[1] += distance * (1/math.sqrt(2))
         if angle == 90:
             self.pos[0] += distance
         if angle == 135:
-            self.pos[0] += distance * math.sin(math.pi/4)
-            self.pos[1] -= distance * math.sin(math.pi/4)
+            self.pos[0] += distance * (1/math.sqrt(2))
+            self.pos[1] -= distance * (1/math.sqrt(2))
         if angle == 180:
             self.pos[1] -= distance
         if angle == 225:
-            self.pos[0] -= distance * math.sin(math.pi/4)
-            self.pos[1] -= distance * math.sin(math.pi/4)
+            self.pos[0] -= distance * (1/math.sqrt(2))
+            self.pos[1] -= distance * (1/math.sqrt(2))
         if angle == 270:
             self.pos[0] -= distance
         if angle == 315:
-            self.pos[0] -= distance * math.sin(math.pi/4)
-            self.pos[1] += distance * math.sin(math.pi/4)
+            self.pos[0] -= distance * (1/math.sqrt(2))
+            self.pos[1] += distance * (1/math.sqrt(2))
 
 
     def update(self):
@@ -94,10 +94,45 @@ class Car(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(center=self.pos+offset_rotated)
 
 
-car = Car([70, 630], 'GUI_Images/car with no box.png')
-car_group = pygame.sprite.Group()
-car_group.add(car)
+    
 
+car = Movable_Object([70, 630], "GUI_Images/car with no box.png")
+Movable_Object_Group = pygame.sprite.Group()
+Movable_Object_Group.add(car)
+
+bounding_box = Movable_Object([70, 630], "GUI_Images/bounding box.png")
+Movable_Object_Group.add(bounding_box)
+
+"""
+def check_collision(dist, direction_of_motion, angle, x,y):
+    if direction_of_motion =='forward':
+        if angle == 0:
+            if y - dist <= 0:
+                return True
+        if angle == 45:
+            if x - dist <= 0 or y - dist <= 0:
+                return True
+        if angle == 90:
+            if x - dist <= 0:
+                return True
+        if angle == 135:
+            if x - dist <= 0 or y + dist >= 700:
+                return True
+        if angle == 180:
+            if y + dist >= 180:
+                return True
+        if angle == 225:
+            if x + dist >= 700 or y + dist >= 700:
+                return True
+        if angle == 270:
+            if x + dist >= 700:
+                return True
+        if angle == 315:
+            if x + dist >= 700 or y -dist <= 0:
+                return True
+
+    return False
+"""
 
 #Game loop
 clock = pygame.time.Clock()
@@ -106,17 +141,28 @@ while running:
 
     screen.fill((255,255,255))
     screen.blit(background, (0, 0))
+    
+    
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False 
+        
+    
 
         if event.type == pygame.KEYDOWN:
               
             if event.key == pygame.K_UP or event.key == ord('w'):
-                car.move_forward(10, car.angle)
+               # if not check_collision(10, 'foward', car.angle, bounding_box.pos[0]-52.5, bounding_box[1]-52.5):
+                    car.move_forward(10, car.angle)
+                    bounding_box.move_forward(10, car.angle)
+
             if event.key == pygame.K_DOWN or event.key == ord('s'):
+
                 car.move_backward(10, car.angle)
+                bounding_box.move_backward(10, car.angle)
+
+                
             if event.key == pygame.K_LEFT or event.key == ord('a'):
                 car.angle += 45
             if event.key == pygame.K_RIGHT or event.key == ord('d'):
@@ -125,7 +171,8 @@ while running:
             print(car.pos)
             print(car.angle)
 
-    car_group.update()
-    car_group.draw(screen)
+    Movable_Object_Group.update()
+    Movable_Object_Group.draw(screen)
     clock.tick(30)
+    
     pygame.display.flip()
