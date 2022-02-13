@@ -7,7 +7,7 @@ from TkinterDnD2 import *
 root = Tk(className="GUI")
 root.title("GUI")
 root.geometry('1200x805')
-root.resizable(False, False)
+#root.resizable(False, False)
 root.configure(bg='#ffffff')
 
 Obstacle_left_img  = Image.open("GUI_Images/Obstacle_Left.png")

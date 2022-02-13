@@ -1,13 +1,12 @@
-from doctest import ELLIPSIS_MARKER
+
 from utils import Node
 from obstacle import Obstacle
 from graph import Graph
+from trip_planner import TripPlanner
 
-def main():
+def main(input_str = "ROB:15,15;OBS1:105,105,90;OBS2:155,65,90;OBS3:65,65,270;OBS4:195,105,180;OBS5:130,160,180"):
 
     # input_str = input()
-
-    input_str = "ROB:15,15;OBS1:100,100,90;OBS2:150,60,0;OBS3:60,60,270;OBS4:200,100,180"
 
     carNode, obstacles = preprocess(input_str= input_str)
 
@@ -24,10 +23,30 @@ def main():
     for item in greedy_path:
         greedy_path_str += f"->{item.key}"
 
-    print(f"Best path:{best_path_str}")
-    print(f"Greedy Path: {greedy_path_str}")
     
 
+    print(f"Best path:{best_path_str}")
+    print(f"Greedy Path: {greedy_path_str}")
+
+    algo = TripPlanner(best_path, obstacles)
+    commands = []
+    for item in best_path:
+
+        item.x = round(item.x)
+        item.y = round(item.y)
+        print((item.x, item.y))
+
+    for i in range (len(best_path)-1):
+
+        print(((best_path[i].x,best_path[i].y), (best_path[i+1].x,best_path[i+1].y)))
+
+        trip = algo.planTripAStar(best_path[i], best_path[i+1])
+
+        instr = algo.generateInstructions(trip)
+        commands += instr
+        commands.append("CAPTURE 20")
+
+    return commands 
 
 
 def preprocess(input_str):
@@ -64,4 +83,4 @@ def preprocess(input_str):
 
 if __name__ == "__main__":
 
-    main()
+    print(main())

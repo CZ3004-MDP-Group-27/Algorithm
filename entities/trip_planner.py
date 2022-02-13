@@ -206,7 +206,8 @@ class TripPlanner:
     def generateInstructions(self, coordinates:  List):
         instructions = []
         delta = 0
-
+        dummy_pt = f"200 200 -360" # for getting the final forward or reverse
+        coordinates.append(dummy_pt)
         for i in range (len(coordinates)-1):
             currentx, currenty, currenttheta = list(map(int,coordinates[i].split(" ")))
             nextx, nexty, nexttheta = list(map(int,coordinates[i+1].split(" ")))
@@ -216,6 +217,7 @@ class TripPlanner:
                 if nexttheta == currenttheta:
                     
                     delta += (nextx - currentx)
+                    
                     continue
 
                 else:
@@ -319,9 +321,9 @@ class TripPlanner:
                     
                     if nexttheta == 0:
 
-                        if nextx < currentx:
-                            instructions.append(f"FORWARD TURN LEFT")
                         if nextx > currentx:
+                            instructions.append(f"FORWARD TURN LEFT")
+                        if nextx < currentx:
                             instructions.append(f"BACKWARD TURN RIGHT")
 
             
