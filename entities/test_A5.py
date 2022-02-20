@@ -4,7 +4,7 @@ from utils import Node
 from trip_planner_copy import TripPlanner
 
 def calcPath(y_dist):
-
+    y_dist += 15
 
     startNode = Node("START", 100, 15, 90)
 
@@ -32,16 +32,14 @@ def calcPath(y_dist):
     commands = []
     for i in range (len(nodeList)-1):
 
-        print(((nodeList[i].x,nodeList[i].y), (nodeList[i+1].x,nodeList[i+1].y)))
-
         trip = algo.planTripAStar(nodeList[i], nodeList[i+1])
 
         instr = algo.generateInstructions(trip)
         
         trp = ";".join(instr)
-        print(trp)
         commands.append(trp)
 
+    print(len(commands))
     return "-".join(commands)
 
 

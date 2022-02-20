@@ -1,7 +1,7 @@
 import pygame
 import pygame
 from pygame.math import Vector2
-import math
+import math, time
 TURNING_RAD = 25
 SCALE = 3.5
 
@@ -69,15 +69,22 @@ class Button:
     def show(self, screen):
         screen.blit(self.surface, (self.x, self.y))
  
-    def click(self, event, simulate):
+    def click(self, event, simulate, rst = False, robot = None, bounding_box = None):
         x, y = pygame.mouse.get_pos()
         if event.type == pygame.MOUSEBUTTONDOWN:
             if pygame.mouse.get_pressed()[0]:
                 if self.rect.collidepoint(x, y):
-                    self.display_text("Simulate", bg="grey")
-                    return True
+                    if rst:
+                        robot.pos[0] = 70
+                        robot.pos[1] = 630
+                        robot.angle = 0
+                        bounding_box.pos[0] = 70
+                        bounding_box.pos[1] = 630
+                    if not rst:
+                        self.display_text("Simulate", bg="grey")
+                        return True, time.time()
         
-        return False or simulate
+        return False or simulate, None
 
 class Movable_Object(pygame.sprite.Sprite):
     def __init__ (self, pos, picture_path):
