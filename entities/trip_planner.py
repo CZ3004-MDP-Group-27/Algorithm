@@ -1,13 +1,16 @@
 
-
 from typing import List
+from collision import CollisionDetector
+from turn_simulator import Turn_Simulator
 from obstacle import Obstacle
 from math import pi
 from utils import Node
+import math
 from heapq import heapify, heappush, heappop
 
 # importing the constants 
-from constants import OBS_DIM, CAR_DIM, TURNING_RAD, DELTA_ST
+# ensure delta_st is less than 30 or else the code will break
+from constants import DELTA_ST,INPLACE_TURN_WEIGHT
 
 
 
@@ -17,191 +20,48 @@ from constants import OBS_DIM, CAR_DIM, TURNING_RAD, DELTA_ST
 
 class TripPlanner:
 
-    def __init__(self, path_sequence, obstacles):
+    def __init__(self, path_sequence, obstacles: List):
 
         self.path_sequence = path_sequence
+        self.collision_detector = CollisionDetector(obstacles)
+        self.turn_sim = Turn_Simulator(collision_detector = self.collision_detector)
         self.obstacles = obstacles
+
+    def _moveForward(self, node:Node):
+
+        return Node(node.key, int(node.x + (DELTA_ST*math.cos(math.radians(node.theta)))), int(node.y + (DELTA_ST*math.sin(math.radians(node.theta)))),node.theta)
     
+    def _moveBackward(self, node:Node):
 
-    def _checkCollision(self, state:Node, obstacle :Obstacle):
-
-        # bottom right and top left co-ordinates
-
-        l1 = (state.x - CAR_DIM//2, state.y + CAR_DIM//2)
-        l2 = (obstacle.pos_x - OBS_DIM//2, obstacle.pos_y + OBS_DIM//2)
-
-        r1 = (state.x + CAR_DIM//2, state.y - CAR_DIM//2)
-        r2 = (obstacle.pos_x + OBS_DIM//2, obstacle.pos_y - OBS_DIM//2)
-
-        if (l1[0] > r2[0] or l2[0] > r1[0]):
-
-            return False
-
-        if (r1[1] > l2[1] or r2[1] > l1[1]):
-
-            return False
-        
-        return True
-
-
-
-
-    def _checkStateIsValid(self,node: Node):
-
-        # check robot is not outside the arena
-
-        cx, cy, ctheta = node.x, node.y, node.theta
-
-        if CAR_DIM//2<=cx<=200 - CAR_DIM//2 and CAR_DIM//2<=cy<=200-CAR_DIM//2 and ctheta % 90 == 0:
-
-            for obs in self.obstacles:
-
-                if self._checkCollision(node, obs):
-                    return False
-                
-            return True
-        
-        return False
-
-    def checkTurn(self, node:Node):
-
-        pass
-
+        return Node(node.key, int(node.x - (DELTA_ST*math.cos(math.radians(node.theta)))), int(node.y - (DELTA_ST*math.sin(math.radians(node.theta)))),node.theta)
 
     def _expandNodeBFS(self,node: Node)-> List:
 
-        cx, cy, ctheta = node.x, node.y, node.theta
-
         states = []
 
-        if ctheta == 0:
 
-            # forward 
+        forward = self._moveForward(node)
+        if self.collision_detector.checkStateIsValid(forward):
 
-            states.append(Node("STATE",cx+DELTA_ST, cy, ctheta))
-            
-            # reverse
-
-            states.append(Node("STATE",cx-DELTA_ST, cy, ctheta))
-
-            # dummy states 
-            dummy_right = (Node("DUMMY", cx, cy-TURNING_RAD, ctheta))
-            dummy_st_fr = (Node("DUMMY", cx+TURNING_RAD, cy, ctheta))
-            dummy_left = (Node("DUMMY", cx, cy+TURNING_RAD, ctheta))
-            dummy_st_bk = (Node("DUMMY", cx-TURNING_RAD, cy, ctheta))
-
-            # forward turn
-            if self._checkStateIsValid(dummy_st_fr):
-                if self._checkStateIsValid(dummy_right):
-                    states.append(Node("STATE",cx+TURNING_RAD, cy-TURNING_RAD, 270))
-                if self._checkStateIsValid(dummy_left):
-                    states.append(Node("STATE",cx+TURNING_RAD, cy+TURNING_RAD, 90))
-            
-            # backward turn
-            if self._checkStateIsValid(dummy_st_bk):
-                if self._checkStateIsValid(dummy_right):
-                    states.append(Node("STATE",cx-TURNING_RAD, cy-TURNING_RAD, 90))
-                if self._checkStateIsValid(dummy_left):
-                    states.append(Node("STATE",cx-TURNING_RAD, cy+TURNING_RAD, 270))
+            states.append(forward)
         
-        elif node.theta == 90:
+        backward = self._moveBackward(node)
+        if self.collision_detector.checkStateIsValid(backward ):
 
-            # forward 
+            states.append(backward)
 
-            states.append(Node("STATE",cx, cy+DELTA_ST, ctheta))
-            
-            # reverse
+        turns = ["forward-right", "forward-left", "backward-left", "backward-right"]
 
-            states.append(Node("STATE",cx, cy-DELTA_ST, ctheta))
+        for turn in turns:
 
-            # dummy states 
-            dummy_right = (Node("DUMMY", cx+TURNING_RAD, cy, ctheta))
-            dummy_st_fr = Node("DUMMY", cx, cy+TURNING_RAD, ctheta)
-            dummy_left = (Node("DUMMY", cx-TURNING_RAD, cy, ctheta))
-            dummy_st_bk = Node("DUMMY", cx, cy-TURNING_RAD, ctheta)
-            
-            # forward turn
-            if self._checkStateIsValid(dummy_st_fr):
-                if self._checkStateIsValid(dummy_right):
-                    states.append(Node("STATE",cx+TURNING_RAD, cy+TURNING_RAD, 0))
-                if self._checkStateIsValid(dummy_left):
-                    states.append(Node("STATE", cx-TURNING_RAD, cy+TURNING_RAD, 180))
-            
-            # backward turn
-            if self._checkStateIsValid(dummy_st_bk):
-                if self._checkStateIsValid(dummy_right):
-                    states.append(Node("STATE",cx+TURNING_RAD, cy-TURNING_RAD, 180))
-                if self._checkStateIsValid(dummy_left):
-                    states.append(Node("STATE",cx-TURNING_RAD, cy-TURNING_RAD, 0))
+            flag, next_state = self.turn_sim.checkTurn(currentNode=node, turn_where=turn)
+            if flag:
+                states.append(next_state)
+
+        # INSERT code for Inplace turns
         
-        elif node.theta == 180:
 
-            # forward 
-
-            states.append(Node("STATE",cx-DELTA_ST, cy, ctheta))
-            
-            # reverse
-
-            states.append(Node("STATE",cx+DELTA_ST, cy, ctheta))
-
-            # dummy states
-            dummy_right = Node("DUMMY", cx, cy+TURNING_RAD, ctheta)
-            dummy_st_fr = Node("DUMMY", cx-TURNING_RAD, cy, ctheta)
-            dummy_left = Node("DUMMY", cx, cy-TURNING_RAD, ctheta)
-            dummy_st_bk = Node("DUMMY", cx+TURNING_RAD, cy, ctheta)
-
-            # forward turn
-            if self._checkStateIsValid(dummy_st_fr):
-                if self._checkStateIsValid(dummy_right):
-                    states.append(Node("STATE",cx-TURNING_RAD, cy+TURNING_RAD, 90))
-                if self._checkStateIsValid(dummy_left):
-                    states.append(Node("STATE",cx-TURNING_RAD, cy-TURNING_RAD, 270))
-            
-            # backward turn
-            if self._checkStateIsValid(dummy_st_bk):
-                if self._checkStateIsValid(dummy_right):
-                    states.append(Node("STATE",cx+TURNING_RAD, cy+TURNING_RAD, 270))
-                if self._checkStateIsValid(dummy_left):
-                    states.append(Node("STATE",cx+TURNING_RAD, cy-TURNING_RAD, 90))
-        
-        elif node.theta == 270:
-
-            # forward 
-
-            states.append(Node("STATE",cx, cy-DELTA_ST, ctheta))
-            
-            # reverse
-
-            states.append(Node("STATE",cx, cy+DELTA_ST, ctheta))
-
-            # dummy states 
-            dummy_right = Node("DUMMY", cx-TURNING_RAD, cy, ctheta)
-            dummy_st_fr = Node("DUMMY", cx, cy-TURNING_RAD, ctheta)
-            dummy_left = Node("DUMMY", cx+TURNING_RAD, cy, ctheta)
-            dummy_st_bk = Node("DUMMY", cx, cy+TURNING_RAD, ctheta)
-
-            # forward turn
-            if self._checkStateIsValid(dummy_st_fr):
-                if self._checkStateIsValid(dummy_right):
-                    states.append(Node("STATE",cx-TURNING_RAD, cy-TURNING_RAD, 180))
-                if self._checkStateIsValid(dummy_left):
-                    states.append(Node("STATE",cx+TURNING_RAD, cy-TURNING_RAD, 0))
-            
-            if self._checkStateIsValid(dummy_st_bk):
-                if self._checkStateIsValid(dummy_right):
-                    states.append(Node("STATE",cx-TURNING_RAD, cy+TURNING_RAD, 0))
-                if self._checkStateIsValid(dummy_left):
-                    states.append(Node("STATE",cx+TURNING_RAD, cy+TURNING_RAD, 180))
-
-        return_states = []
-
-        for st in states:
-
-            if self._checkStateIsValid(st):
-
-                return_states.append(st)
-
-        return return_states
+        return states
 
     def generateInstructions(self, coordinates:  List):
         instructions = []
@@ -225,7 +85,7 @@ class TripPlanner:
                     if delta > 0:
                         instructions.append(f"FORWARD {delta}")
                     elif delta < 0:
-                        instructions.append(f"REVERSE {-delta}")
+                        instructions.append(f"BACKWARD {-delta}")
                     delta = 0
 
                     if nexttheta == 90:
@@ -253,7 +113,7 @@ class TripPlanner:
                     if delta > 0:
                         instructions.append(f"FORWARD {delta}")
                     elif delta < 0:
-                        instructions.append(f"REVERSE {-delta}")
+                        instructions.append(f"BACKWARD {-delta}")
                     delta = 0
 
                     if nexttheta == 0:
@@ -281,7 +141,7 @@ class TripPlanner:
                     if delta > 0:
                         instructions.append(f"FORWARD {delta}")
                     elif delta < 0:
-                        instructions.append(f"REVERSE {-delta}")
+                        instructions.append(f"BACKWARD {-delta}")
                     delta = 0
 
                     if nexttheta == 90:
@@ -309,7 +169,7 @@ class TripPlanner:
                     if delta > 0:
                         instructions.append(f"FORWARD {delta}")
                     elif delta < 0:
-                        instructions.append(f"REVERSE {-delta}")
+                        instructions.append(f"BACKWARD {-delta}")
                     delta = 0
 
                     if nexttheta == 180:
@@ -330,19 +190,14 @@ class TripPlanner:
         return instructions
                     
 
-                    
-
-            
-
-        # just trace back the code for _expand node
-
-        pass
-
     def _computeManhattan(self,node1: Node, node2: Node):
 
         #theta_diff = abs(node1.theta - node2.theta)
-        x_diff = abs (node1.x - node2.x)
-        y_diff = abs (node1.y - node2.y)
+        x_diff = round(abs (node1.x - node2.x))
+        y_diff = round(abs (node1.y - node2.y))
+
+        if x_diff + y_diff == 0:
+            return INPLACE_TURN_WEIGHT
 
         return x_diff + y_diff
     
@@ -392,6 +247,7 @@ class TripPlanner:
         heapify(open_list)
 
         while (len(open_list) != 0):
+            
             f,current = heappop(open_list)
             adj = self._expandNodeBFS(current)
             current_hash = f"{current.x} {current.y} {current.theta}"
@@ -454,10 +310,11 @@ class TripPlanner:
         while (len(queue) != 0):
             
             path = queue.pop(0)
+            
 
             if len(path) > level:
                 level += 1
-                #print(f"Level: {level}")
+                print(f"Level: {level}")
 
             newNode = path[-1]
 
@@ -466,7 +323,6 @@ class TripPlanner:
 
             if newNode == goalNode:
                 #print(f"Trip from {startNode.key} to {goalNode.key}: {path}")
-
                 return path
             
             adj = self._expandNodeBFS(newNode)
@@ -483,6 +339,7 @@ class TripPlanner:
             
             visited[f"{newNode.x}, {newNode.y}, {newNode.theta}"] = True
 
+        
         print(f"No of states searched: {len(visited)}")
         print(newNode.x, newNode.y, newNode.theta)
         return []

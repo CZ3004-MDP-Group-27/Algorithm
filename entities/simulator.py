@@ -59,10 +59,10 @@ running = True
 commands = ["FORWARD 5", "ROTATE 45", "FORWARD 35.35", "ROTATE -45", "REVERSE 5"]
 
 Obstacle_Group = pygame.sprite.Group()
-#obstacle_list = [[595.0, 595.0, 90], [455.0, 455.0, 0], [472.5, 157.5, 90], [52.5, 367.5, 270], [210.0, 210.0, 180]]
+obstacle_list = [[595.0, 595.0, 90], [455.0, 455.0, 0], [472.5, 157.5, 90], [52.5, 367.5, 270], [210.0, 210.0, 180]]
 #obstacle_list = [[542.5,472.5,90], [227.5,472.5, 270],[682.5, 332.5, 180], [455, 140,180]]
-obstacle_list = [[350, 437.5, 0], [350, 437.5, 90], [350, 437.5, 180], [350, 437.5, 270]]
-android_string = "ROB:100,15"
+#obstacle_list = [[350, 437.5, 0], [350, 437.5, 90], [350, 437.5, 180], [350, 437.5, 270]]
+android_string = "ROB:20,20"
 for i in range(len(obstacle_list)):
     x, y , theta = obstacle_list[i]
     x = x//SCALE
@@ -131,9 +131,11 @@ while running:
                 
             if event.key == pygame.K_LEFT or event.key == ord('a'):
                 car.angle += 45
+                bounding_box.angle += 45
                 
             if event.key == pygame.K_RIGHT or event.key == ord('d'):
                 car.angle -= 45
+                bounding_box.angle -= 45
 
         
         simulate, tm = sim_button.click(event, simulate)

@@ -4,7 +4,7 @@ from obstacle import Obstacle
 from graph import Graph
 from trip_planner import TripPlanner
 
-def main(input_str = "ROB:15,15;OBS1:105,105,90;OBS2:155,65,90;OBS3:65,65,270;OBS4:195,105,180;OBS5:130,160,180"):
+def main(input_str = "ROB:20,20;OBS1:105,105,90;OBS2:155,65,90;OBS3:65,65,270;OBS4:195,105,180;OBS5:130,160,180"):
 
     # input_str = input()
 
@@ -39,7 +39,6 @@ def main(input_str = "ROB:15,15;OBS1:105,105,90;OBS2:155,65,90;OBS3:65,65,270;OB
     for i in range (len(best_path)-1):
 
         print(((best_path[i].x,best_path[i].y), (best_path[i+1].x,best_path[i+1].y)))
-
         trip = algo.planTripAStar(best_path[i], best_path[i+1])
 
         instr = algo.generateInstructions(trip)
@@ -83,4 +82,4 @@ def preprocess(input_str):
 
 if __name__ == "__main__":
 
-    print(main())
+    print(main('ROB:15,15;OBS1:170,30,90;OBS2:130,70,0;OBS3:135,155,90;OBS4:15,95,270;OBS5:60,140,180'))
