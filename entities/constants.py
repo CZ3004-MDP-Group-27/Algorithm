@@ -32,7 +32,7 @@ WAYPOINT_THETA = {
 
 
 #edit accordingly
-width = 15
-height = 25
+width = 25
+height = 15
 WIDTH = 60 
 HEIGHT = 50
