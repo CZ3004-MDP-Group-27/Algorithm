@@ -29,3 +29,10 @@ WAYPOINT_THETA = {
     270: 90
 
 }
+
+
+#edit accordingly
+width = 52.5 #distance from center of robot to side edge of turning box 
+height = 87.5 #distance from center of robot to bottom edge of turning box 
+WIDTH = 210 
+HEIGHT = 175
