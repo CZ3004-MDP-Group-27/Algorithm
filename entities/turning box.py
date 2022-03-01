@@ -55,7 +55,29 @@ class turning_box():
         self.pos = [self.pos[0], self.pos[1]]
 
 
-out_of_bounds = False
+    def check_inplace_turn_validity(self, obstacle_list):
+        validity = True
+
+        for boundary in box.x_boundary:
+            if boundary < 0  or boundary > 700:
+                print("x coordinate of turning box out of bounds")
+                validity = False
+
+        for boundary in box.y_boundary:
+            if boundary < 0  or boundary > 700:
+                print("y coordinate of turning box out of bounds")
+                validity = False
+
+        for obstacle in obstacle_list:
+            if (obstacle[0]-17.5 > box.x_boundary[0] and obstacle[0]+17.5 < box.x_boundary[1]) or (obstacle[1]-17.5 > box.y_boundary[0] and obstacle[1]+17.5 < box.y_boundary[1]):
+                print("obstacle({}, {}) is within the turning box".format(obstacle[0], obstacle[1]))
+                validity = False
+        
+        return validity
+
+
+
+
 box =  turning_box((300,300), 'E', 'right')
 print("(x, y): ",box.pos)
 print("x boundary: ",box.x_boundary)
@@ -63,18 +85,4 @@ print("y boundary: ",box.y_boundary)
 
 obstacle_list = [[595.0, 595.0, 90], [455.0, 455.0, 0], [472.5, 157.5, 90], [52.5, 367.5, 270], [210.0, 210.0, 180]]
 
-for boundary in box.x_boundary:
-    if boundary < 0  or boundary > 700:
-        print("x coordinate of turning box out of bounds")
-        out_of_bounds = True
-
-for boundary in box.y_boundary:
-    if boundary < 0  or boundary > 700:
-        print("y coordinate of turning box out of bounds")
-        out_of_bounds = True
-
-
-for obstacle in obstacle_list:
-    if (obstacle[0]-17.5 > box.x_boundary[0] and obstacle[0]+17.5 < box.x_boundary[1]) or (obstacle[1]-17.5 > box.y_boundary[0] and obstacle[1]+17.5 < box.y_boundary[1]):
-        print("obstacle({}, {}) is within the turning box".format(obstacle[0], obstacle[1]))
-
+print(box.check_inplace_turn_validity(obstacle_list))
