@@ -7,7 +7,7 @@ class turning_box():
     y_boundary = [0,0]
     def __init__(self, pos_of_car, orientation,  direction_of_turn):
         super().__init__()
-        if orientation == 'N':
+        if orientation == 'N' or orientation == '90':
             if direction_of_turn == 'left':
                 self.pos[0] = pos_of_car[0] + width - (WIDTH/2)
                 self.pos[1] = pos_of_car[1] - height + (HEIGHT/2)
@@ -18,7 +18,7 @@ class turning_box():
             self.x_boundary[1] = self.pos[0] + (WIDTH/2)
             self.y_boundary[0] = self.pos[1] - (HEIGHT/2)
             self.y_boundary[1] = self.pos[1] + (HEIGHT/2)
-        elif orientation == 'S':
+        elif orientation == 'S' or orientation == '270':
             if direction_of_turn == 'left':
                 self.pos[0] = pos_of_car[0] - width + (WIDTH/2)
                 self.pos[1] = pos_of_car[1] + height - (HEIGHT/2)
@@ -29,7 +29,7 @@ class turning_box():
             self.x_boundary[1] = self.pos[0] + (WIDTH/2)
             self.y_boundary[0] = self.pos[1] - (HEIGHT/2)
             self.y_boundary[1] = self.pos[1] + (HEIGHT/2)
-        elif orientation == 'E':
+        elif orientation == 'E' or orientation == '0':
             if direction_of_turn == 'left':
                 self.pos[0] = pos_of_car[0] - height + (HEIGHT/2)
                 self.pos[1] = pos_of_car[1] - width + (WIDTH/2)
@@ -40,7 +40,7 @@ class turning_box():
             self.x_boundary[1] = self.pos[0] + (HEIGHT/2)
             self.y_boundary[0] = self.pos[1] - (WIDTH/2)
             self.y_boundary[1] = self.pos[1] + (WIDTH/2)
-        elif orientation == 'W':
+        elif orientation == 'W' or orientation == '180':
             if direction_of_turn == 'left':
                 self.pos[0] = pos_of_car[0] + height - (HEIGHT/2)
                 self.pos[1] = pos_of_car[1] + width - (WIDTH/2)
