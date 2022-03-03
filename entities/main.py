@@ -36,14 +36,17 @@ def main(input_str = "ROB:20,20;OBS1:105,105,90;OBS2:155,65,90;OBS3:65,65,270;OB
         item.y = round(item.y)
         print((item.x, item.y))
 
-    for i in range (len(best_path)-1):
+    current = 0
+    for next in range (1,len(best_path)):
 
-        print(((best_path[i].x,best_path[i].y), (best_path[i+1].x,best_path[i+1].y)))
-        trip = algo.planTripAStar(best_path[i], best_path[i+1])
-
+        print(((best_path[current].x,best_path[current].y), (best_path[next].x,best_path[next].y)))
+        trip = algo.planTripAStar(best_path[current], best_path[next])
+        if len(trip) == 0:
+            continue
         instr = algo.generateInstructions(trip)
         commands += instr
         commands.append("CAPTURE 20")
+        current=next
 
     return commands 
 
@@ -82,4 +85,4 @@ def preprocess(input_str):
 
 if __name__ == "__main__":
 
-    print(main('ROB:15,15;OBS1:170,30,90;OBS2:130,70,0;OBS3:135,155,90;OBS4:15,95,270;OBS5:60,140,180'))
+    print(main('ROB:15,15;OBS1:170,30,90;OBS2:130,70,0;OBS3:135,135,90;OBS4:15,95,270;OBS5:60,140,180'))

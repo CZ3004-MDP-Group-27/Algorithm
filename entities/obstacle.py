@@ -1,6 +1,4 @@
 import math
-
-from cv2 import WARP_POLAR_LINEAR
 from constants import OBS_DIM,FOCUS, WAYPOINT_THETA
 # Assumption pos_x, pos_y is the centre of the obstacle 
 

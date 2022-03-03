@@ -122,13 +122,18 @@ class Turn_Simulator:
 
         for theta in range(open_angle, close_angle+(iter_theta//abs(iter_theta)), iter_theta):
 
-            x = a*math.cos(math.radians(theta)) + h
-            y = b*math.sin(math.radians(theta)) + k
+            x = round(a*math.cos(math.radians(theta)) + h,2)
+            y = round(b*math.sin(math.radians(theta)) + k,2)
             
 
             intermediate_state = Node("DUMMY", x, y, currentNode.theta)
 
-            if not self.collision_detector.checkStateIsValid(intermediate_state, self.padding) :
+            if theta > open_angle and theta < close_angle:
+                padding = self.padding
+            else:
+                padding = 0
+
+            if not self.collision_detector.checkStateIsValid(intermediate_state, padding) :
 
                 return False, None
             

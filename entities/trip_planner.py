@@ -1,5 +1,6 @@
 
 from typing import List
+from inplace_simulator import Inplace_Simulator
 from collision import CollisionDetector
 from turn_simulator import Turn_Simulator
 from obstacle import Obstacle
@@ -25,6 +26,7 @@ class TripPlanner:
         self.path_sequence = path_sequence
         self.collision_detector = CollisionDetector(obstacles)
         self.turn_sim = Turn_Simulator(collision_detector = self.collision_detector)
+        self.inplace_sim = Inplace_Simulator(collision_detector= self.collision_detector)
         self.obstacles = obstacles
 
     def _moveForward(self, node:Node):
@@ -59,7 +61,13 @@ class TripPlanner:
                 states.append(next_state)
 
         # INSERT code for Inplace turns
-        
+
+        inplace_turns = ["left", "right"]
+        for turn in inplace_turns:
+
+            flag, next_state = self.inplace_sim.checkTurn(currentNode=node, turn_where=turn)
+            if flag:
+                states.append(next_state)
 
         return states
 
@@ -94,6 +102,8 @@ class TripPlanner:
                             instructions.append(f"FORWARD TURN LEFT")
                         if nextx < currentx:
                             instructions.append(f"BACKWARD TURN RIGHT")
+                        if nextx == currentx and nexty == currenty:
+                            instructions.append(f"INPLACE LEFT")
                     
                     if nexttheta == 270:
 
@@ -101,6 +111,8 @@ class TripPlanner:
                             instructions.append(f"FORWARD TURN RIGHT")
                         if nextx < currentx:
                             instructions.append(f"BACKWARD TURN LEFT")
+                        if nextx == currentx and nexty == currenty:
+                            instructions.append(f"INPLACE RIGHT")
             
             elif currenttheta == 90:
                 if nexttheta == currenttheta:
@@ -122,6 +134,8 @@ class TripPlanner:
                             instructions.append(f"FORWARD TURN RIGHT")
                         if nextx < currentx:
                             instructions.append(f"BACKWARD TURN LEFT")
+                        if nextx == currentx and nexty == currenty:
+                            instructions.append(f"INPLACE RIGHT")
                     
                     if nexttheta == 180:
 
@@ -129,6 +143,8 @@ class TripPlanner:
                             instructions.append(f"FORWARD TURN LEFT")
                         if nextx > currentx:
                             instructions.append(f"BACKWARD TURN RIGHT")
+                        if nextx == currentx and nexty == currenty:
+                            instructions.append(f"INPLACE LEFT")
             
             elif currenttheta == 180:
                 if nexttheta == currenttheta:
@@ -150,6 +166,8 @@ class TripPlanner:
                             instructions.append(f"FORWARD TURN RIGHT")
                         if nextx > currentx:
                             instructions.append(f"BACKWARD TURN LEFT")
+                        if nextx == currentx and nexty == currenty:
+                            instructions.append(f"INPLACE RIGHT")
                     
                     if nexttheta == 270:
 
@@ -157,6 +175,8 @@ class TripPlanner:
                             instructions.append(f"FORWARD TURN LEFT")
                         if nextx > currentx:
                             instructions.append(f"BACKWARD TURN RIGHT")
+                        if nextx == currentx and nexty == currenty:
+                            instructions.append(f"INPLACE LEFT")
 
             elif currenttheta == 270:
                 if nexttheta == currenttheta:
@@ -178,6 +198,8 @@ class TripPlanner:
                             instructions.append(f"FORWARD TURN RIGHT")
                         if nextx > currentx:
                             instructions.append(f"BACKWARD TURN LEFT")
+                        if nextx == currentx and nexty == currenty:
+                            instructions.append(f"INPLACE RIGHT")
                     
                     if nexttheta == 0:
 
@@ -185,6 +207,8 @@ class TripPlanner:
                             instructions.append(f"FORWARD TURN LEFT")
                         if nextx < currentx:
                             instructions.append(f"BACKWARD TURN RIGHT")
+                        if nextx == currentx and nexty == currenty:
+                            instructions.append(f"INPLACE LEFT")
 
             
         return instructions
