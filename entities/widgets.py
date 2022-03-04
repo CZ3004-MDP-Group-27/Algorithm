@@ -102,6 +102,8 @@ class Movable_Object(pygame.sprite.Sprite):
 
     def move_forward(self, distance, angle):
         distance *= SCALE
+        # self.pos[0] += distance * (math.sin(angle))
+        # self.pos[1] += distance * (math.cos(angle))
         if angle == 0:
             self.pos[1] -= distance
         if angle == 45:

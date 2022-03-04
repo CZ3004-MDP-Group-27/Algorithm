@@ -24,14 +24,8 @@ pygame.display.set_caption("GUI")
 set icon below
 """
 
-    
-
-car = Movable_Object([350, 630], "GUI_Images/car with no box.png")
 Movable_Object_Group = pygame.sprite.Group()
-Movable_Object_Group.add(car)
 
-bounding_box = Movable_Object([350, 630], "GUI_Images/bounding box.png")
-Movable_Object_Group.add(bounding_box)
 
 sim_button = Button(
     "Simulate",
@@ -48,26 +42,37 @@ rst_button = Button(
 )
 
 
-class Simulator():
-
-    def __init__():
-        pass
-
-#Game loop
 clock = pygame.time.Clock()
 running = True
-commands = ["FORWARD 5", "ROTATE 45", "FORWARD 35.35", "ROTATE -45", "REVERSE 5"]
+android_string = 'ROB:15,15;OBS1:175,35,90;OBS2:135,75,0;OBS3:135,135,90;OBS4:15,95,270;OBS5:55,145,180'
+
+objects = android_string.split(";")
+obstacle_list = []
+for item in objects:
+    key, pos = item.split(":")
+
+    if key == "ROB":
+        
+        posX, posY = list(map(int,pos.split(",")))
+        x = posX*SCALE
+        y = 700 - (SCALE*posY)
+        car = Movable_Object([x, y], "GUI_Images/car with no box.png")
+        bounding_box = Movable_Object([x, y], "GUI_Images/bounding box.png")
+        Movable_Object_Group.add(bounding_box)
+        Movable_Object_Group.add(car)
+    else:
+
+        posX, posY, pos_image = list(map(int,pos.split(",")))
+        x = posX*SCALE
+        y = 700 - (SCALE*posY)
+        obstacle_list.append([x,y,pos_image])
+        print(posX,posY,pos_image)
+
 
 Obstacle_Group = pygame.sprite.Group()
-obstacle_list = [[595.0, 595.0, 90], [455.0, 455.0, 0], [472.5, 157.5, 90], [52.5, 367.5, 270], [210.0, 210.0, 180]]
+#obstacle_list = [[595.0, 595.0, 90], [455.0, 455.0, 0], [472.5, 157.5, 90], [52.5, 367.5, 270], [210.0, 210.0, 180]]
 #obstacle_list = [[542.5,472.5,90], [227.5,472.5, 270],[682.5, 332.5, 180], [455, 140,180]]
 #obstacle_list = [[350, 437.5, 0], [350, 437.5, 90], [350, 437.5, 180], [350, 437.5, 270]]
-android_string = "ROB:20,20"
-for i in range(len(obstacle_list)):
-    x, y , theta = obstacle_list[i]
-    x = x//SCALE
-    y = (700 - y)//SCALE
-    android_string += f";OBS{i+1}:{int(x)},{int(y)},{int(theta)}"
 
 print(android_string)
 
@@ -79,6 +84,7 @@ def generate_commands():
     return commands
 
 commands = generate_commands()
+#commands = ["ROTATE 42","FORWARD 10.63", "BACKWARD 10.63"]
 
 
 
@@ -154,8 +160,10 @@ while running:
             sim_button.display_text("Simulate", bg = "green")
             commands = generate_commands()
         else:
+            
             instr, num = commands.pop(0).split(" ")
             num = float(num)
+            print(instr, num)
         
         current = time.time()
     
@@ -170,7 +178,7 @@ while running:
             pygame.display.update()
             time.sleep(1)
 
-        elif instr == "REVERSE":
+        elif instr == "BACKWARD":
             car.move_backward(num, car.angle)
             bounding_box.move_backward(num, car.angle)
             pygame.display.update()

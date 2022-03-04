@@ -1,8 +1,12 @@
-
+from constants import COMMANDS, TR
+import math
 
 def parse(commands):
 
     parsed_commands = []
+    a, b = TR["90 Turn"]
+    angle = round(math.degrees(math.atan(b/a)))
+    hypotenuse = round(math.sqrt(a**2 + b**2)/5,2)
     
     for instr in commands:
 
@@ -25,31 +29,45 @@ def parse(commands):
         elif len(clauses) == 3:
 
             if clauses[0] == "FORWARD" and clauses[2] == "RIGHT":
-                
-                parsed_commands += ["ROTATE 45"]
-                for i in range(5):
-                    parsed_commands.append("FORWARD 7.071")
-                parsed_commands += ["ROTATE 45"]
+                if clauses[1] == "TURN":
+                    parsed_commands += [f"FORWARD {b}"]
+                    parsed_commands += ["ROTATE 90"]
+                    parsed_commands += [f"FORWARD {a}"]
+                    # parsed_commands += [f"ROTATE {angle}"]
+                    # for i in range(5):
+                    #     parsed_commands.append(f"FORWARD {hypotenuse}")
+                    # parsed_commands += [f"ROTATE {90 - angle}"]
+                else:
+                    parsed_commands += ["ROTATE 90"]
 
             elif clauses[0] == "FORWARD" and clauses[2] == "LEFT":
-                
-                parsed_commands += ["ROTATE -45"]
-                for i in range(5):
-                    parsed_commands.append("FORWARD 7.071")
-                parsed_commands += ["ROTATE -45"]
+                if clauses[1] == "TURN":
+                    parsed_commands += [f"FORWARD {b}"]
+                    parsed_commands += ["ROTATE -90"]
+                    parsed_commands += [f"FORWARD {a}"]
+                    # parsed_commands += [f"ROTATE {-angle}"]
+                    # for i in range(5):
+                    #     parsed_commands.append(f"FORWARD {hypotenuse}")
+                    # parsed_commands += [f"ROTATE {-90 + angle}"]
+                else:
+                    parsed_commands += ["ROTATE -90"]
 
             elif clauses[0] == "BACKWARD" and clauses[2] == "LEFT":
-                
-                parsed_commands += ["ROTATE 45"]
-                for i in range(5):
-                    parsed_commands.append("REVERSE 7.071")
-                parsed_commands += ["ROTATE 45"]
+                parsed_commands += [f"BACKWARD {b}"]
+                parsed_commands += ["ROTATE 90"]
+                parsed_commands += [f"BACKWARD {a}"]
+                # parsed_commands += [f"ROTATE {angle}"]
+                # for i in range(5):
+                #     parsed_commands.append(f"BACKWARD {hypotenuse}")
+                # parsed_commands += [f"ROTATE {90 - angle}"]
             elif clauses[0] == "BACKWARD" and clauses[2] == "RIGHT":
-                
-                parsed_commands += ["ROTATE -45"]
-                for i in range(5):
-                    parsed_commands.append("REVERSE 7.071")
-                parsed_commands += ["ROTATE -45"]
+                parsed_commands += [f"BACKWARD {b}"]
+                parsed_commands += ["ROTATE -90"]
+                parsed_commands += [f"BACKWARD {a}"]
+                # parsed_commands += [f"ROTATE {- angle}"]
+                # for i in range(5):
+                #     parsed_commands.append(f"BACKWARD {hypotenuse}")
+                # parsed_commands += [f"ROTATE {-90 + angle}"]
 
     
     return parsed_commands

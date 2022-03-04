@@ -1,5 +1,5 @@
 TURN_PADDING = 4
-FOCUS = 30
+FOCUS = 25
 CAR_DIM = 30
 OBS_DIM = 10
 MIN_EDGE = float("inf")
@@ -8,12 +8,12 @@ DELTA_ST = 5
 
 
 TR = {
-    "90 Turn": (35, 25),
+    "90 Turn": (40, 25),
     "Inplace turn": {
         "height": 50,
-        "width": 60,
+        "width": 50,
         "st": 15,
-        "side": 25
+        "side": 15
     }
 
 }
@@ -26,6 +26,28 @@ WAYPOINT_THETA = {
     180: 90,
     270: 180
 
+}
+
+COMMANDS = {
+    "F": "FORWARD",
+    "B": "BACKWARD",
+    "ILEFT": "FORWARD INPLACE LEFT",
+    "IRIGHT": "FORWARD INPLACE RIGHT",
+    "FTR": "FORWARD TURN RIGHT",
+    "FTL": "FORWARD TURN LEFT",
+    "BTR": "BACKWARD TURN RIGHT",
+    "BTL": "BACKWARD TURN LEFT"
+}
+
+ANDROID_COMMANDS = {
+    "F": "FORWARD",
+    "B": "BACKWARD",
+    "ILEFT": "INPLACELEFT",
+    "IRIGHT": "INPLACERIGHT",
+    "FTR": "FORWARDTURNRIGHT",
+    "FTL": "FORWARDTURNLEFT",
+    "BTR": "BACKWARDTURNRIGHT",
+    "BTL": "BACKWARDTURNLEFT"
 }
 # WAYPOINT_THETA = {
 

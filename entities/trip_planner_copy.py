@@ -1,5 +1,4 @@
 
-from tkinter import COMMAND
 from typing import List
 from inplace_simulator import Inplace_Simulator
 from collision import CollisionDetector
@@ -12,7 +11,8 @@ from heapq import heapify, heappush, heappop
 
 # importing the constants 
 # ensure delta_st is less than 30 or else the code will break
-from constants import DELTA_ST,INPLACE_TURN_WEIGHT, COMMANDS
+from constants import DELTA_ST,INPLACE_TURN_WEIGHT, ANDROID_COMMANDS
+COMMANDS = ANDROID_COMMANDS
 
 
 
