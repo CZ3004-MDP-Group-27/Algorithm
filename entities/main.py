@@ -44,18 +44,18 @@ def main(input_str = "ROB:20,20;OBS1:105,105,90;OBS2:155,65,90;OBS3:65,65,270;OB
         if len(trip) == 0:
             continue
         instr = algo.generateInstructions(trip)
-        commands += instr
-        commands.append("CAPTURE 20")
+        # commands += instr
+        # commands.append("CAPTURE 20")
         
-        # trp = ";".join(instr)
-        # commands.append(trp)
+        trp = ";".join(instr)
+        commands.append(trp)
         current=next
 
     print(len(commands))
-    #return "-".join(commands)
+    return "-".join(commands)
         
 
-    return commands 
+    #return commands 
 
 
 def preprocess(input_str):
