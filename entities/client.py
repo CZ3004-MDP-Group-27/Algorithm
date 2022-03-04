@@ -15,7 +15,7 @@ def receive():
         send(map=text.decode())
 
 def send(map):
-    text = main(map)#"ROB:15,15;OBS1:45,125,0;OBS2:135,155,270;OBS3:105,105,180;OBS4:145,45,90")
+    text = main('ROB:15,15;OBS1:175,35,90;OBS2:135,135,90;OBS3:15,95,270;OBS4:55,145,180')#map)#"ROB:15,15;OBS1:45,125,0;OBS2:135,155,270;OBS3:105,105,180;OBS4:145,45,90")
     s.send(text.encode())
 
 if __name__ == '__main__':

@@ -93,4 +93,4 @@ def preprocess(input_str):
 if __name__ == "__main__":
 
     #print(main('ROB:20,20;OBS1:170,30,90;OBS2:130,70,0;OBS3:135,135,90;OBS4:15,95,270;OBS5:60,140,180'))
-    print(main("ROB:15,15;OBS1:45,125,0;OBS2:135,155,270;OBS3:85,5,180;OBS4:145,45,90"))
+    print(main("ROB:15,15;OBS1:45,125,0;OBS2:135,155,270;OBS3:85,65,180;OBS4:145,45,90"))

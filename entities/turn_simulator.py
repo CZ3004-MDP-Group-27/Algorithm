@@ -15,32 +15,53 @@ class Turn_Simulator:
     def _returnMeta(self, currentNode:Node, turn_where = "forward-right"):
         x, y, theta = currentNode.x, currentNode.y, currentNode.theta
 
-        dir = turn_where.split("-")[-1]
+        st, dir = turn_where.split("-")
 
         center = {
             0: {
-                "left": lambda x,y: (x, y+self.ellipse_a),
-                "right": lambda  x,y: (x, y-self.ellipse_a)
+                "forward-left": lambda x,y: (x, y+self.ellipse_a),
+                "forward-right": lambda  x,y: (x, y-self.ellipse_a),
+                "backward-left": lambda x,y: (x, y+self.ellipse_b),
+                "backward-right": lambda x,y: (x, y-self.ellipse_b)
             },
             180: {
-                "left": lambda x,y: (x, y-self.ellipse_a),
-                "right": lambda  x,y: (x, y+self.ellipse_a)
+                "forward-left": lambda x,y: (x, y-self.ellipse_a),
+                "forward-right": lambda  x,y: (x, y+self.ellipse_a),
+                "backward-left": lambda x,y: (x, y-self.ellipse_b),
+                "backward-right": lambda x,y: (x, y+self.ellipse_b)
             },
             90: {
-                "left": lambda x,y: (x-self.ellipse_a, y),
-                "right": lambda  x,y: (x+self.ellipse_a, y)
+                "forward-left": lambda x,y: (x-self.ellipse_a, y),
+                "forward-right": lambda  x,y: (x+self.ellipse_a, y),
+                "backward-left": lambda  x,y: (x-self.ellipse_b, y),
+                "backward-right": lambda  x,y: (x+self.ellipse_b, y),
             },
             270: {
-                "left": lambda x,y: (x+self.ellipse_a, y),
-                "right": lambda  x,y: (x-self.ellipse_a, y)
+                "forward-left": lambda x,y: (x+self.ellipse_a, y),
+                "forward-right": lambda  x,y: (x-self.ellipse_a, y),
+                "backward-left": lambda  x,y: (x+self.ellipse_b, y),
+                "backward-right": lambda  x,y: (x-self.ellipse_b, y),
             }
         }
 
         axes = {
-            0: (self.ellipse_b, self.ellipse_a),
-            180: (self.ellipse_b, self.ellipse_a),
-            90: (self.ellipse_a, self.ellipse_b),
-            270: (self.ellipse_a, self.ellipse_b)
+            0: {
+                "forward":(self.ellipse_b, self.ellipse_a),
+                "backward":((self.ellipse_a, self.ellipse_b))
+                },
+            180: { 
+                "forward": (self.ellipse_b, self.ellipse_a),
+                "backward":(self.ellipse_a, self.ellipse_b)
+
+                },
+            90: {
+                "forward":(self.ellipse_a, self.ellipse_b),
+                "backward":(self.ellipse_b, self.ellipse_a)
+                },
+            270: {
+                "forward":(self.ellipse_a, self.ellipse_b),
+                "backward":(self.ellipse_b, self.ellipse_a)
+                }
 
         }
 
@@ -100,7 +121,7 @@ class Turn_Simulator:
 
         }
 
-        return center[theta][dir](x,y), axes[theta], simulate_angles[theta][turn_where], next_theta[theta][turn_where]
+        return center[theta][turn_where](x,y), axes[theta][st], simulate_angles[theta][turn_where], next_theta[theta][turn_where]
 
     
     def checkTurn(self,currentNode: Node, turn_where = "forward-right" ):
@@ -111,7 +132,8 @@ class Turn_Simulator:
         h,k = center
         a,b = sides 
         open_angle, close_angle = simulate_angles
-
+        # print(a,b)
+        # print(open_angle, close_angle)
 
 
         if open_angle > close_angle:
@@ -140,6 +162,7 @@ class Turn_Simulator:
         intermediate_state.theta = next_theta
         intermediate_state.x = round(intermediate_state.x)
         intermediate_state.y= round(intermediate_state.y)
+        # print(intermediate_state.x, intermediate_state.y)
         return True, intermediate_state
 
 
@@ -171,10 +194,10 @@ def test(theta):
 
 if __name__ == "__main__":
 
-    test(0)
+    #test(0)
     test(90)
-    test(180)
-    test(270)
+    # test(180)
+    # test(270)
 
 
 
