@@ -26,7 +26,7 @@ class TripPlanner:
 
         self.path_sequence = path_sequence
         self.collision_detector = CollisionDetector(obstacles)
-        self.turn_sim = Turn_Simulator(collision_detector = self.collision_detector)
+        self.turn_sim = Turn_Simulator(collision_detector = self.collision_detector, iter_theta= 5)
         self.inplace_sim = Inplace_Simulator(collision_detector= self.collision_detector)
         self.obstacles = obstacles
 
@@ -63,12 +63,12 @@ class TripPlanner:
 
         # INSERT code for Inplace turns
 
-        # inplace_turns = ["left", "right"]
-        # for turn in inplace_turns:
+        inplace_turns = ["left", "right"]
+        for turn in inplace_turns:
 
-        #     flag, next_state = self.inplace_sim.checkTurn(currentNode=node, turn_where=turn)
-        #     if flag:
-        #         states.append(next_state)
+            flag, next_state = self.inplace_sim.checkTurn(currentNode=node, turn_where=turn)
+            if flag:
+                states.append(next_state)
 
         return states
 

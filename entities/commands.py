@@ -28,7 +28,8 @@ def parse(commands):
         
         elif len(clauses) == 3:
 
-            if clauses[0] == "FORWARD" and clauses[2] == "RIGHT":
+            
+            if clauses[0] == "FORWARD" and (clauses[2] == "RIGHT" or clauses[2] == "RI"):
                 if clauses[1] == "TURN":
                     parsed_commands += [f"FORWARD {b}"]
                     parsed_commands += ["ROTATE 90"]
@@ -40,7 +41,7 @@ def parse(commands):
                 else:
                     parsed_commands += ["ROTATE 90"]
 
-            elif clauses[0] == "FORWARD" and clauses[2] == "LEFT":
+            elif clauses[0] == "FORWARD" and (clauses[2] == "LEFT" or clauses[2] == "LE"):
                 if clauses[1] == "TURN":
                     parsed_commands += [f"FORWARD {b}"]
                     parsed_commands += ["ROTATE -90"]
@@ -52,18 +53,18 @@ def parse(commands):
                 else:
                     parsed_commands += ["ROTATE -90"]
 
-            elif clauses[0] == "BACKWARD" and clauses[2] == "LEFT":
-                parsed_commands += [f"BACKWARD {b}"]
-                parsed_commands += ["ROTATE 90"]
+            elif clauses[0] == "BACKWARD" and (clauses[2] == "LEFT" or clauses[2] == "LE"):
                 parsed_commands += [f"BACKWARD {a}"]
+                parsed_commands += ["ROTATE 90"]
+                parsed_commands += [f"BACKWARD {b}"]
                 # parsed_commands += [f"ROTATE {angle}"]
                 # for i in range(5):
                 #     parsed_commands.append(f"BACKWARD {hypotenuse}")
                 # parsed_commands += [f"ROTATE {90 - angle}"]
-            elif clauses[0] == "BACKWARD" and clauses[2] == "RIGHT":
-                parsed_commands += [f"BACKWARD {b}"]
-                parsed_commands += ["ROTATE -90"]
+            elif clauses[0] == "BACKWARD" and (clauses[2] == "RIGHT" or clauses[2] == "RI"):
                 parsed_commands += [f"BACKWARD {a}"]
+                parsed_commands += ["ROTATE -90"]
+                parsed_commands += [f"BACKWARD {b}"]
                 # parsed_commands += [f"ROTATE {- angle}"]
                 # for i in range(5):
                 #     parsed_commands.append(f"BACKWARD {hypotenuse}")

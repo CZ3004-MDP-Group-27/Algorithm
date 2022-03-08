@@ -1,4 +1,5 @@
 
+from obstacle import Obstacle
 from collision import CollisionDetector
 from utils import Node
 from constants import TR, TURN_PADDING
@@ -143,26 +144,28 @@ class Turn_Simulator:
             iter_theta = self.iter_theta
 
         for theta in range(open_angle, close_angle+(iter_theta//abs(iter_theta)), iter_theta):
-
+            #print(theta)
             x = round(a*math.cos(math.radians(theta)) + h,2)
             y = round(b*math.sin(math.radians(theta)) + k,2)
             
 
             intermediate_state = Node("DUMMY", x, y, currentNode.theta)
-
-            if theta > open_angle and theta < close_angle:
+            #print(self.padding)
+            if theta != open_angle and theta != close_angle:
                 padding = self.padding
             else:
                 padding = 0
-
+            
+            print(padding)
             if not self.collision_detector.checkStateIsValid(intermediate_state, padding) :
 
                 return False, None
+            #print(intermediate_state.x, intermediate_state.y)
             
         intermediate_state.theta = next_theta
         intermediate_state.x = round(intermediate_state.x)
         intermediate_state.y= round(intermediate_state.y)
-        # print(intermediate_state.x, intermediate_state.y)
+        print(intermediate_state.x, intermediate_state.y)
         return True, intermediate_state
 
 
@@ -173,20 +176,20 @@ def test(theta):
     # TEST 0
 
     currentNode = Node("STATE", 100, 100, theta = theta)
-    
-    turn_sim = Turn_Simulator(iter_theta=45)
+    obstacle_list = [Obstacle("A", 200,125, 90)]
+    turn_sim = Turn_Simulator(iter_theta=5, collision_detector=CollisionDetector(obstacle_list))
 
     print ("FORWARD RIGHT")
-    turn_sim.checkTurn(currentNode, turn_where= "forward-right")
+    print(turn_sim.checkTurn(currentNode, turn_where= "forward-right"))
 
     print ("FORWARD LEFT")
-    turn_sim.checkTurn(currentNode, turn_where= "forward-left")
+    print(turn_sim.checkTurn(currentNode, turn_where= "forward-left"))
 
     print ("BACKWARD RIGHT")
-    turn_sim.checkTurn(currentNode, turn_where= "backward-right")
+    print(turn_sim.checkTurn(currentNode, turn_where= "backward-right"))
 
     print ("BACKWARD LEFT")
-    turn_sim.checkTurn(currentNode, turn_where= "backward-left")
+    print(turn_sim.checkTurn(currentNode, turn_where= "backward-left"))
 
     
 
@@ -195,9 +198,9 @@ def test(theta):
 if __name__ == "__main__":
 
     #test(0)
-    test(90)
+    #test(90)
     # test(180)
-    # test(270)
+    test(270)
 
 
 

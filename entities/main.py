@@ -63,18 +63,18 @@ def main(input_str = "ROB:20,20;OBS1:105,105,90;OBS2:155,65,90;OBS3:65,65,270;OB
                     continue
         
         instr = algo.generateInstructions(trip)
-        # commands += instr
-        # commands.append("CAPTURE 20")
+        commands += instr
+        commands.append("CAPTURE 20")
         
-        trp = ";".join(instr)
-        commands.append(trp)
+        # trp = ";".join(instr)
+        # commands.append(trp)
         current=dest
 
-    print(f"Yay! We got {len(commands)} obstacles")
-    return "-".join(commands)
+    #print(f"Yay! We got {len(commands)} obstacles")
+    #return "-".join(commands)
         
 
-    #return commands 
+    return commands 
 
 
 def preprocess(input_str):
@@ -111,5 +111,7 @@ def preprocess(input_str):
 
 if __name__ == "__main__":
 
-    #print(main('ROB:20,20;OBS1:170,30,90;OBS2:130,70,0;OBS3:135,135,90;OBS4:15,95,270;OBS5:60,140,180'))
-    print(main("ROB:15,15;OBS1:125,5,0;OBS2:135,155,270;OBS3:85,5,180;OBS4:145,45,90"))
+    #print(main('ROB:15,15;OBS1:170,30,90;OBS2:130,70,0;OBS3:135,135,90;OBS4:15,95,270;OBS5:60,140,180'))
+    print(main('ROB:15,15;OBS1:15,115,90;OBS2:105,45,0;OBS3:195,15,90;OBS4:135,105,270;OBS5:105,115,180;OBS6:155,145,270;OBS7:75,175,180'))
+
+    #print(main("ROB:15,15;OBS1:125,5,0;OBS2:135,155,270;OBS3:85,5,180;OBS4:145,45,90"))
