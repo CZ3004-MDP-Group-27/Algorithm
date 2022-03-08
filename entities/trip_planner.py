@@ -317,7 +317,7 @@ class TripPlanner:
         # Algo failed which is impossible as Astar is complete 
         print ("Oops! No solution found")
         print(f"No of states searched: {len(closed_list)}")
-        print(current.x, current.y, current.theta)
+        #print(current.x, current.y, current.theta)
         return []
 
 

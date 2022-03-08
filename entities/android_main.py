@@ -2,7 +2,7 @@
 from utils import Node
 from obstacle import Obstacle
 from graph import Graph
-from trip_planner_copy import TripPlanner
+from trip_planner_android import TripPlanner
 
 def main(input_str = "ROB:20,20;OBS1:105,105,90;OBS2:155,65,90;OBS3:65,65,270;OBS4:195,105,180;OBS5:130,160,180"):
 

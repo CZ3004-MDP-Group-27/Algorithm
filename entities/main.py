@@ -3,6 +3,8 @@ from utils import Node
 from obstacle import Obstacle
 from graph import Graph
 from trip_planner import TripPlanner
+import math
+from copy import deepcopy
 
 def main(input_str = "ROB:20,20;OBS1:105,105,90;OBS2:155,65,90;OBS3:65,65,270;OBS4:195,105,180;OBS5:130,160,180"):
 
@@ -36,22 +38,39 @@ def main(input_str = "ROB:20,20;OBS1:105,105,90;OBS2:155,65,90;OBS3:65,65,270;OB
         item.y = round(item.y)
         print((item.x, item.y))
 
-    current = 0
+    current = best_path[0]
     for next in range (1,len(best_path)):
 
-        print(((best_path[current].x,best_path[current].y), (best_path[next].x,best_path[next].y)))
-        trip = algo.planTripAStar(best_path[current], best_path[next])
+        dest = deepcopy(best_path[next])
+        print("First Try:")
+        print(((current.x,current.y), (dest.x,dest.y)))
+        trip = algo.planTripAStar(current, dest)
         if len(trip) == 0:
-            continue
+            dest = deepcopy(best_path[next])
+            dest.x = dest.x + int(10*math.cos(math.radians(dest.theta)))
+            dest.y = dest.y + int(10*math.sin(math.radians(dest.theta)))
+            print("Second try:")
+            print(((current.x,current.y), (dest.x,dest.y)))
+            trip = algo.planTripAStar(current, dest)
+            if len(trip) == 0:
+                dest = deepcopy(best_path[next])
+                dest.x = dest.x - int((10*math.cos(math.radians(dest.theta))))
+                dest.y = dest.y - int(10*math.sin(math.radians(dest.theta)))
+                print(((current.x,current.y), (dest.x,dest.y)))
+                print ("Third Try:")
+                trip = algo.planTripAStar(current, dest)
+                if len(trip) == 0:
+                    continue
+        
         instr = algo.generateInstructions(trip)
         # commands += instr
         # commands.append("CAPTURE 20")
         
         trp = ";".join(instr)
         commands.append(trp)
-        current=next
+        current=dest
 
-    print(len(commands))
+    print(f"Yay! We got {len(commands)} obstacles")
     return "-".join(commands)
         
 
@@ -93,4 +112,4 @@ def preprocess(input_str):
 if __name__ == "__main__":
 
     #print(main('ROB:20,20;OBS1:170,30,90;OBS2:130,70,0;OBS3:135,135,90;OBS4:15,95,270;OBS5:60,140,180'))
-    print(main("ROB:15,15;OBS1:45,125,0;OBS2:135,155,270;OBS3:85,65,180;OBS4:145,45,90"))
+    print(main("ROB:15,15;OBS1:125,5,0;OBS2:135,155,270;OBS3:85,5,180;OBS4:145,45,90"))

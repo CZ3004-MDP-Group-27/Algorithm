@@ -17,16 +17,25 @@ TR = {
     }
 
 }
-INPLACE_TURN_WEIGHT = TR["90 Turn"][0]+TR["90 Turn"][1]+5
+INPLACE_TURN_WEIGHT = 2*(TR["90 Turn"][0]+TR["90 Turn"][1])
 
 WAYPOINT_THETA = {
 
-    0: 270,
-    90: 0,
-    180: 90,
-    270: 180
+    0: 90,
+    90: 180,
+    180: 270,
+    270: 0
 
 }
+
+# WAYPOINT_THETA = {
+
+#     0: 270,
+#     90: 0,
+#     180: 90,
+#     270: 180
+
+# }
 
 COMMANDS = {
     "F": "FORWARD",
