@@ -55,7 +55,10 @@ class Graph:
 
         # find all permutations and find the shortest one
 
-        nodeList = [self.nodeMap[item] for item in self.graph]
+        nodeList = []
+        for item in self.graph:
+            if self.nodeMap[item] != self.carNode and item != self.carNode.key:
+                nodeList.append(self.nodeMap[item])
 
         minPathCost = float("inf")
         min_path_sequence = None
@@ -63,7 +66,7 @@ class Graph:
         for path_sequence in list(permutations(nodeList)):
 
             pathCost = 0
-
+            path_sequence = [self.carNode] + list(path_sequence)
             for i in range(1, len(path_sequence)):
 
                 pathCost += self._calc_dist(path_sequence[i-1], path_sequence[i])

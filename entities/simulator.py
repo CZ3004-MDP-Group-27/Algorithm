@@ -44,7 +44,7 @@ rst_button = Button(
 
 clock = pygame.time.Clock()
 running = True
-android_string = 'ROB:15,15;OBS1:15,115,90;OBS2:105,45,0;OBS3:195,15,90;OBS4:135,105,270;OBS5:105,115,180;OBS6:155,145,270;OBS7:75,175,180'
+android_string = 'ROB:15,15;OBS1:55,75,270;OBS2:125,95,0;OBS3:155,45,90;OBS4:155,155,270;OBS5:55,135,180'
 #android_string = "ROB:15,15;OBS1:,90"
 objects = android_string.split(";")
 obstacle_list = []

@@ -1,5 +1,5 @@
-TURN_PADDING = 10
-FOCUS = 25
+TURN_PADDING = 8
+FOCUS = 35
 CAR_DIM = 30
 OBS_DIM = 10
 MIN_EDGE = float("inf")
@@ -17,7 +17,7 @@ TR = {
     }
 
 }
-INPLACE_TURN_WEIGHT = 2*(TR["90 Turn"][0]+TR["90 Turn"][1])
+INPLACE_TURN_WEIGHT = 4*(TR["90 Turn"][0]+TR["90 Turn"][1])
 
 WAYPOINT_THETA = {
 
