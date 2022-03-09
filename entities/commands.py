@@ -1,5 +1,7 @@
-from constants import COMMANDS, TR
+from tkinter import COMMAND
+from constants import STM_COMMANDS, TR
 import math
+COMMANDS = STM_COMMANDS
 
 def parse(commands):
 

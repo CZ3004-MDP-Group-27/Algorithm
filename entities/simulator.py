@@ -3,7 +3,7 @@ import pygame
 import time
 from widgets import Movable_Object, Obstacle, Button
 from commands import parse
-from main import main
+from simulator_main import main
 import time, math
 TIME_LIMIT = 360
 
