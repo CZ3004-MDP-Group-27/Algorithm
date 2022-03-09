@@ -20,7 +20,7 @@ def main(input_str = "ROB:20,20;OBS1:105,105,90;OBS2:155,65,90;OBS3:65,65,270;OB
     best_path_str, greedy_path_str = "", ""
 
     for item in best_path:
-        best_path_str += f"->{item.key}"
+        best_path_str += f"{item.key}->"
     
     for item in greedy_path:
         greedy_path_str += f"->{item.key}"
@@ -31,7 +31,8 @@ def main(input_str = "ROB:20,20;OBS1:105,105,90;OBS2:155,65,90;OBS3:65,65,270;OB
     print(f"Greedy Path: {greedy_path_str}")
 
     algo = TripPlanner(best_path, obstacles)
-    commands = []
+    stm_commands = []
+    android_commands = []
     for item in best_path:
 
         item.x = round(item.x)
@@ -39,9 +40,11 @@ def main(input_str = "ROB:20,20;OBS1:105,105,90;OBS2:155,65,90;OBS3:65,65,270;OB
         print((item.x, item.y))
 
     current = best_path[0]
+    path = ""
     for next in range (1,len(best_path)):
 
         dest = deepcopy(best_path[next])
+        
         print("First Try:")
         print(((current.x,current.y), (dest.x,dest.y)))
         trip = algo.planTripAStar(current, dest)
@@ -61,20 +64,21 @@ def main(input_str = "ROB:20,20;OBS1:105,105,90;OBS2:155,65,90;OBS3:65,65,270;OB
                 trip = algo.planTripAStar(current, dest)
                 if len(trip) == 0:
                     continue
-        
-        instr = algo.generateInstructions(trip)
-        commands += instr
-        commands.append("CAPTURE 20")
-        
-        # trp = ";".join(instr)
-        # commands.append(trp)
+        path += f"{dest.key}->"
+        stm_instr = algo.generateInstructions(trip, device = "stm")
+        stm_commands.append(';'.join(stm_instr))
+        android_instr = algo.generateInstructions(trip, device = "android")
+        android_commands.append(';'.join(android_instr))
         current=dest
 
-    #print(f"Yay! We got {len(commands)} obstacles")
-    #return "-".join(commands)
-        
+    print(f"Yay! We found {len(stm_commands)} obstacles")
+    stm_commands = "-".join(stm_commands)
+    android_commands = "-".join(android_commands)
+    path = path[:-2]
 
-    return commands 
+    final_str = stm_commands + "|" + android_commands + "|" + path
+
+    return final_str
 
 
 def preprocess(input_str):

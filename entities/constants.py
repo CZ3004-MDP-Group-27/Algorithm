@@ -28,16 +28,7 @@ WAYPOINT_THETA = {
 
 }
 
-# WAYPOINT_THETA = {
-
-#     0: 270,
-#     90: 0,
-#     180: 90,
-#     270: 180
-
-# }
-
-COMMANDS = {
+STM_COMMANDS = {
     "F": "FORWARD",
     "B": "BACKWARD",
     "ILEFT": "FORWARD INPLACE LE",
@@ -64,5 +55,14 @@ ANDROID_COMMANDS = {
 #     90: 270,
 #     180: 0,
 #     270: 90
+
+# }
+
+# WAYPOINT_THETA = {
+
+#     0: 270,
+#     90: 0,
+#     180: 90,
+#     270: 180
 
 # }

@@ -1,10 +1,8 @@
 
-from tkinter import COMMAND
 from typing import List
 from inplace_simulator import Inplace_Simulator
 from collision import CollisionDetector
 from turn_simulator import Turn_Simulator
-from obstacle import Obstacle
 from math import pi
 from utils import Node
 import math
@@ -12,13 +10,10 @@ from heapq import heapify, heappush, heappop
 
 # importing the constants 
 # ensure delta_st is less than 30 or else the code will break
-from constants import DELTA_ST,INPLACE_TURN_WEIGHT, COMMANDS
-
-
+from constants import DELTA_ST,INPLACE_TURN_WEIGHT, STM_COMMANDS, ANDROID_COMMANDS
 
 # Add instuctions after moving to the co-ordinate 
 # make a seperate function for that 
-
 
 class TripPlanner:
 
@@ -72,7 +67,11 @@ class TripPlanner:
 
         return states
 
-    def generateInstructions(self, coordinates:  List):
+    def generateInstructions(self, coordinates:  List, device = "stm"):
+        if device == "android":
+            COMMANDS = ANDROID_COMMANDS
+        elif device == "stm":
+            COMMANDS = STM_COMMANDS
         instructions = []
         delta = 0
         dummy_pt = f"200 200 -360" # for getting the final forward or reverse
