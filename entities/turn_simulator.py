@@ -7,7 +7,7 @@ import math
 
 class Turn_Simulator:
 
-    def __init__(self, padding=TURN_PADDING, iter_theta = 5, collision_detector:CollisionDetector = None):
+    def __init__(self, padding, iter_theta = 5, collision_detector:CollisionDetector = None):
         self.padding = padding
         self.iter_theta = iter_theta
         self.ellipse_a, self.ellipse_b = TR["90 Turn"]

@@ -11,21 +11,22 @@ from heapq import heapify, heappush, heappop
 
 # importing the constants 
 # ensure delta_st is less than 30 or else the code will break
-from constants import DELTA_ST,INPLACE_TURN_WEIGHT, STM_COMMANDS, ANDROID_COMMANDS
+from constants import DELTA_ST,INPLACE_TURN_WEIGHT, STM_COMMANDS, ANDROID_COMMANDS, TURN_PADDING
 
 # Add instuctions after moving to the co-ordinate 
 # make a seperate function for that 
 
 class TripPlanner:
 
-    def __init__(self, path_sequence, obstacles: List):
+    def __init__(self, path_sequence, obstacles: List, inplace = True, padding = TURN_PADDING):
 
         self.path_sequence = path_sequence
         self.collision_detector = CollisionDetector(obstacles)
-        self.turn_sim = Turn_Simulator(collision_detector = self.collision_detector, iter_theta= 5)
+        self.turn_sim = Turn_Simulator(collision_detector = self.collision_detector, iter_theta= 5, padding= padding)
         self.inplace_sim = Inplace_Simulator(collision_detector= self.collision_detector)
         self.obstacles = obstacles
         self.error_calibrator = Error_Calibrator(collision_detector=self.collision_detector)
+        self.inplace = inplace
 
     def _moveForward(self, node:Node):
 
@@ -61,11 +62,12 @@ class TripPlanner:
         # INSERT code for Inplace turns
 
         inplace_turns = ["left", "right"]
-        for turn in inplace_turns:
+        if self.inplace:
+            for turn in inplace_turns:
 
-            flag, next_state = self.inplace_sim.checkTurn(currentNode=node, turn_where=turn)
-            if flag:
-                states.append(next_state)
+                flag, next_state = self.inplace_sim.checkTurn(currentNode=node, turn_where=turn)
+                if flag:
+                    states.append(next_state)
 
         return states
 

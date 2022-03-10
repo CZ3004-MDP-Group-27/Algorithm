@@ -8,7 +8,7 @@ DELTA_ST = 5
 
 
 TR = {
-    "90 Turn": (40, 25),
+    "90 Turn": (40, 20),
     "Inplace turn": {
         "height": 50,
         "width": 50,
