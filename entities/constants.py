@@ -17,7 +17,7 @@ TR = {
     }
 
 }
-INPLACE_TURN_WEIGHT = 4*(TR["90 Turn"][0]+TR["90 Turn"][1])
+INPLACE_TURN_WEIGHT = 5*(TR["90 Turn"][0]+TR["90 Turn"][1])
 
 WAYPOINT_THETA = {
 

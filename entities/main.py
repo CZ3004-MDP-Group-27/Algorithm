@@ -6,7 +6,7 @@ from trip_planner import TripPlanner
 import math
 from copy import deepcopy
 
-def main(input_str = "ROB:20,20;OBS1:105,105,90;OBS2:155,65,90;OBS3:65,65,270;OBS4:195,105,180;OBS5:130,160,180"):
+def main(input_str = "ROB:20,20;OBS1:105,105,90;OBS2:155,65,90;OBS3:65,65,270;OBS4:195,105,180;OBS5:130,160,180", args=None):
 
     # input_str = input()
 
@@ -29,8 +29,10 @@ def main(input_str = "ROB:20,20;OBS1:105,105,90;OBS2:155,65,90;OBS3:65,65,270;OB
 
     print(f"Best path:{best_path_str}")
     print(f"Greedy Path: {greedy_path_str}")
-
-    algo = TripPlanner(best_path, obstacles)
+    if args is not None:
+        algo = TripPlanner(best_path, obstacles, args.use_inplace, int(args.padding))
+    else:
+        algo = TripPlanner(best_path, obstacles)
     stm_commands = []
     android_commands = []
     for item in best_path:
@@ -119,7 +121,7 @@ def preprocess(input_str):
 
 if __name__ == "__main__":
 
-    # sprint(main('ROB:25,25;OBS1:55,75,270;OBS2:125,95,0;OBS3:155,45,90;OBS4:155,155,270;OBS5:55,135,180'))
+    # print(main('ROB:25,25;OBS1:55,75,270;OBS2:125,95,0;OBS3:155,45,90;OBS4:155,155,270;OBS5:55,135,180'))
     print(main('ROB:15,15;OBS1:15,115,90;OBS2:105,45,0;OBS3:195,15,90;OBS4:135,105,270;OBS5:105,115,180;OBS6:155,145,270;OBS7:75,175,180'))
 
     #print(main("ROB:15,15;OBS1:125,5,0;OBS2:135,155,270;OBS3:85,5,180;OBS4:145,45,90"))
