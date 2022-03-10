@@ -41,6 +41,7 @@ def main(input_str = "ROB:20,20;OBS1:105,105,90;OBS2:155,65,90;OBS3:65,65,270;OB
 
     current = best_path[0]
     path = ""
+    corrections = []
     for next in range (1,len(best_path)):
 
         dest = deepcopy(best_path[next])
@@ -69,14 +70,17 @@ def main(input_str = "ROB:20,20;OBS1:105,105,90;OBS2:155,65,90;OBS3:65,65,270;OB
         stm_commands.append(';'.join(stm_instr))
         android_instr = algo.generateInstructions(trip, device = "android")
         android_commands.append(';'.join(android_instr))
+        f_err, b_err = algo.error_calibrator.getCorrection(dest)
+        corrections.append(f"{f_err},{b_err}")
         current=dest
 
     print(f"Yay! We found {len(stm_commands)} obstacles")
     stm_commands = "-".join(stm_commands)
     android_commands = "-".join(android_commands)
     path = path[:-2]
+    corrections = ";".join(corrections)
 
-    final_str = stm_commands + "|" + android_commands + "|" + path
+    final_str = stm_commands + "|" + android_commands + "|" + path + "|" + corrections
 
     return final_str
 
@@ -115,7 +119,7 @@ def preprocess(input_str):
 
 if __name__ == "__main__":
 
-    print(main('ROB:15,15;OBS1:55,75,270;OBS2:125,95,0;OBS3:155,45,90;OBS4:155,155,270;OBS5:55,135,180'))
-    #print(main('ROB:15,15;OBS1:15,115,90;OBS2:105,45,0;OBS3:195,15,90;OBS4:135,105,270;OBS5:105,115,180;OBS6:155,145,270;OBS7:75,175,180'))
+    # sprint(main('ROB:25,25;OBS1:55,75,270;OBS2:125,95,0;OBS3:155,45,90;OBS4:155,155,270;OBS5:55,135,180'))
+    print(main('ROB:15,15;OBS1:15,115,90;OBS2:105,45,0;OBS3:195,15,90;OBS4:135,105,270;OBS5:105,115,180;OBS6:155,145,270;OBS7:75,175,180'))
 
     #print(main("ROB:15,15;OBS1:125,5,0;OBS2:135,155,270;OBS3:85,5,180;OBS4:145,45,90"))

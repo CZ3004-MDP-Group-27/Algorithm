@@ -158,14 +158,14 @@ class Turn_Simulator:
             
             #print(padding)
             if not self.collision_detector.checkStateIsValid(intermediate_state, padding) :
-
+                # print(intermediate_state.x, intermediate_state.y)
                 return False, None
-            #print(intermediate_state.x, intermediate_state.y)
+            
             
         intermediate_state.theta = next_theta
         intermediate_state.x = round(intermediate_state.x)
         intermediate_state.y= round(intermediate_state.y)
-        #print(intermediate_state.x, intermediate_state.y)
+        # print(intermediate_state.x, intermediate_state.y)
         return True, intermediate_state
 
 
@@ -175,8 +175,8 @@ def test(theta):
 
     # TEST 0
 
-    currentNode = Node("STATE", 100, 100, theta = theta)
-    obstacle_list = [Obstacle("A", 200,125, 90)]
+    currentNode = Node("STATE", 15, 135, theta = theta)
+    obstacle_list = [Obstacle("A", 200,135, 90)]
     turn_sim = Turn_Simulator(iter_theta=5, collision_detector=CollisionDetector(obstacle_list))
 
     print ("FORWARD RIGHT")
@@ -198,9 +198,9 @@ def test(theta):
 if __name__ == "__main__":
 
     #test(0)
-    #test(90)
+    test(90)
     # test(180)
-    test(270)
+    #test(270)
 
 
 

@@ -3,6 +3,7 @@ from typing import List
 from inplace_simulator import Inplace_Simulator
 from collision import CollisionDetector
 from turn_simulator import Turn_Simulator
+from error_calibrator import Error_Calibrator
 from math import pi
 from utils import Node
 import math
@@ -24,6 +25,7 @@ class TripPlanner:
         self.turn_sim = Turn_Simulator(collision_detector = self.collision_detector, iter_theta= 5)
         self.inplace_sim = Inplace_Simulator(collision_detector= self.collision_detector)
         self.obstacles = obstacles
+        self.error_calibrator = Error_Calibrator(collision_detector=self.collision_detector)
 
     def _moveForward(self, node:Node):
 
